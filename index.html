@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Motivating Christian • YouTube-Enacted Shorts Studio</title>
+  <title>Motivating Christian • Studio Engine</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: #060911; color: #f8fafc; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 14px; }
@@ -12,7 +12,7 @@
     h1 { color: #f59e0b; font-size: 20px; letter-spacing: 0.5px; margin-bottom: 3px; }
     p.sub { color: #94a3b8; font-size: 12px; }
 
-    .container { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; max-width: 1080px; width: 100%; }
+    .container { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; max-width: 1100px; width: 100%; }
 
     .controls { background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; padding: 16px; flex: 1; min-width: 340px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
     label { font-size: 11px; color: #f59e0b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -26,7 +26,7 @@
     .duration-btn { padding: 6px; font-size: 11px; border: 1px solid #334155; border-radius: 6px; background: #0a0f1d; color: #94a3b8; cursor: pointer; font-weight: 600; text-align: center; }
     .duration-btn.active { background: #d97706; color: #fff; border-color: #f59e0b; font-weight: 700; }
 
-    /* Synchronized Duration-Locked Audio Trimmer */
+    /* Interactive Waveform & Mark-In Trimmer */
     .audio-panel {
       background: #0a0f1d;
       border: 1px dashed #f59e0b;
@@ -34,14 +34,15 @@
       padding: 10px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
     }
     .audio-panel input[type="file"] { border: none; padding: 0; background: transparent; font-size: 11px; color: #94a3b8; }
-    .trimmer-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #cbd5e1; }
-    .trimmer-row input[type="range"] { flex: 1; accent-color: #f59e0b; }
-    .trim-range-badge { display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; font-weight: 600; }
-    .btn-trim-preview { padding: 5px 10px; font-size: 11px; background: #334155; border: none; border-radius: 6px; color: #fff; cursor: pointer; font-weight: 600; white-space: nowrap; }
-    .btn-trim-preview.playing { background: #10b981; }
+    .trim-readout { display: flex; justify-content: space-between; align-items: center; font-size: 11px; background: #020617; padding: 6px 10px; border-radius: 6px; border: 1px solid #1e293b; }
+    .trim-controls { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 6px; }
+    .trim-btn { padding: 6px 8px; font-size: 11px; border-radius: 6px; border: none; font-weight: 700; cursor: pointer; text-align: center; }
+    .btn-play-all { background: #334155; color: #fff; }
+    .btn-mark-in { background: #f59e0b; color: #000; }
+    .btn-test-clip { background: #10b981; color: #fff; }
 
     .yt-search-box { display: flex; gap: 6px; }
     .btn-yt-go { background: #dc2626; color: #fff; border: none; border-radius: 8px; padding: 0 12px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
@@ -81,7 +82,7 @@
 
   <header>
     <h1>MOTIVATING CHRISTIAN • SHORTS STUDIO</h1>
-    <p class="sub">Duration-Locked Dynamic Audio Trimmer • Direct YouTube Sync</p>
+    <p class="sub">Dynamic Mark-In Audio Trimmer • 5:00 AM Daily Scripture Engine</p>
   </header>
 
   <div class="container">
@@ -100,9 +101,9 @@
         </div>
       </div>
 
-      <!-- Duration Selector (Directly drives the trim span) -->
+      <!-- Duration Selector -->
       <div>
-        <label>Shorts Duration (Trimmer Automatically Matches)</label>
+        <label>Shorts Recording Duration</label>
         <div class="duration-grid">
           <button id="dur_15" class="duration-btn active" onclick="setDuration(15)">⚡ 15 Seconds</button>
           <button id="dur_30" class="duration-btn" onclick="setDuration(30)">⏳ 30 Seconds</button>
@@ -110,7 +111,30 @@
         </div>
       </div>
 
-      <!-- DIRECT YOUTUBE SONG SEARCH & ENACTOR -->
+      <!-- Mark-In Visual Audio Trimmer -->
+      <div>
+        <label>Dynamic Audio Trimmer (Play & Mark In-Point)</label>
+        <div class="audio-panel">
+          <input type="file" id="audioFileInput" accept="audio/*" onchange="handleAudioUpload(event)">
+          
+          <div class="trim-readout">
+            <span>Now: <b id="currPlayTime" style="color:#38bdf8;">0:00</b></span>
+            <span>Clip: <b id="clipRangeDisplay" style="color:#f59e0b;">0:00 ➔ 0:15</b></span>
+            <span>Span: <b id="clipSpanDisplay" style="color:#10b981;">15s</b></span>
+          </div>
+
+          <input type="range" id="audioScrubber" min="0" max="100" value="0" step="0.2" oninput="handleManualScrub(this.value)">
+
+          <div class="trim-controls">
+            <button id="btnPlayAll" class="trim-btn btn-play-all" onclick="togglePlayFull()">▶ Play Audio</button>
+            <button class="trim-btn btn-mark-in" onclick="markInPoint()">🎯 Mark Start</button>
+            <button id="btnTestClip" class="trim-btn btn-test-clip" onclick="testTrimmedSpan()">🔁 Test Span</button>
+          </div>
+          <span style="font-size: 10px; color:#94a3b8;">Hit Play, listen to find your favorite chorus, then tap <b>Mark Start</b>.</span>
+        </div>
+      </div>
+
+      <!-- YouTube Song Selection -->
       <div>
         <label>Selected YouTube Song (Shown on Poster / Video)</label>
         <div class="yt-search-box">
@@ -119,36 +143,18 @@
         </div>
       </div>
 
-      <!-- Toggle Auto-Suggestions -->
       <div class="toggle-row">
         <span>Suggested Matches Column:</span>
         <button id="suggestToggleBtn" class="switch-btn active" onclick="toggleSuggestionColumn()">ENABLED (ON)</button>
       </div>
 
-      <!-- Dynamic Start-to-End Trimmer Panel -->
+      <!-- Scripture Controls -->
       <div>
-        <label>Audio Track Trimmer (Start to End)</label>
-        <div class="audio-panel">
-          <input type="file" id="audioFileInput" accept="audio/*" onchange="handleAudioUpload(event)">
-          
-          <div class="trim-range-badge">
-            <span>Start: <b id="startTimeDisplay" style="color:#f59e0b;">0:00</b></span>
-            <span>Clip Span: <b id="clipSpanDisplay" style="color:#38bdf8;">15s</b></span>
-            <span>End: <b id="endTimeDisplay" style="color:#10b981;">0:15</b></span>
-          </div>
-
-          <div class="trimmer-row">
-            <input type="range" id="audioScrubber" min="0" max="100" value="0" step="0.5" oninput="updateScrubberTime(this.value)">
-            <button id="trimPreviewBtn" class="btn-trim-preview" onclick="previewHypedTimephrase()">▶ Test Clip</button>
-          </div>
-          <span style="font-size: 10px; color:#94a3b8;">Slide to set the start; the end timestamp locks to your selected Shorts duration.</span>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+          <label style="margin:0;">Select Scripture</label>
+          <button style="width:auto; padding:4px 8px; font-size:10px; background:#f59e0b; color:#000; border:none; border-radius:4px; font-weight:700; cursor:pointer;" onclick="loadDailyMorningVerse()">🌅 Today's 5:00 AM Verse</button>
         </div>
-      </div>
-
-      <!-- Scripture Search & Theme Badges -->
-      <div>
-        <label>Search Scripture</label>
-        <input type="text" id="searchVerseInput" placeholder="e.g. కాపరి, బలము, శాంతి..." oninput="handleFilteredSearch()">
+        <input type="text" id="searchVerseInput" placeholder="Search scripture keywords..." oninput="handleFilteredSearch()">
       </div>
 
       <div>
@@ -157,11 +163,9 @@
       </div>
 
       <div>
-        <label>Select Scripture</label>
         <select id="entrySelect" onchange="loadSelectedEntry()"></select>
       </div>
 
-      <!-- Connected Song Suggestion Card -->
       <div class="info-card" id="suggestionCard">
         <div class="info-title">💡 Auto-Suggested Reference Song:</div>
         <div id="suggestedSongTitle" style="font-weight: 700; color: #facc15;">—</div>
@@ -169,14 +173,12 @@
         <button class="btn-copy" style="margin-top: 5px;" onclick="useSuggestedSong()">Use This Suggestion ↵</button>
       </div>
 
-      <!-- Final Metadata Display -->
       <div class="info-card">
         <div class="info-title">📋 YouTube Metadata (Ready to Copy):</div>
         <div id="ytMeta" style="font-size: 11px; color: #cbd5e1; word-break: break-word;">—</div>
         <button class="btn-copy" id="copyBtn" onclick="copyFullMetadata()">📋 Copy Caption & Tags</button>
       </div>
 
-      <!-- Action Buttons -->
       <div class="btn-row">
         <button class="action-btn btn-primary" onclick="randomizeInTheme()">🔀 Shuffle</button>
         <button class="action-btn btn-download" onclick="downloadShortFrame()">🖼️ PNG</button>
@@ -242,16 +244,8 @@
       document.getElementById("recordBtn").innerText = `🎬 Record ${selectedDuration}s`;
       document.getElementById("clipSpanDisplay").innerText = `${selectedDuration}s`;
 
-      // Recalibrate audio scrubber boundaries to prevent overflow
       if (audioElement && audioElement.duration) {
-        const scrubber = document.getElementById("audioScrubber");
-        const maxStart = Math.max(0, audioElement.duration - selectedDuration);
-        scrubber.max = maxStart;
-        if (audioTrimStart > maxStart) {
-          audioTrimStart = maxStart;
-          scrubber.value = maxStart;
-        }
-        updateScrubberTime(audioTrimStart);
+        clampAndRefreshTrimmer();
       }
     }
 
@@ -293,15 +287,12 @@
     }
 
     function getDisplaySong() {
-      if (customSongOverride.length > 0) {
-        return customSongOverride;
-      }
-      if (suggestionsEnabled && filteredList[currentIndex]) {
-        return filteredList[currentIndex].songName;
-      }
+      if (customSongOverride.length > 0) return customSongOverride;
+      if (suggestionsEnabled && filteredList[currentIndex]) return filteredList[currentIndex].songName;
       return "";
     }
 
+    // COMPREHENSIVE SCRIPTURE ARCHIVE
     const bibleThemes = [
       { id: "ALL", name: "అన్ని వాక్యాలు (All Themes)" },
       { id: "FEAR", name: "భయము & ఆందోళన (Fear & Anxiety)" },
@@ -333,6 +324,22 @@
     let filteredList = [...scriptureDatabase];
     let currentIndex = 0;
 
+    // 5:00 AM DAILY AUTO-UPDATER ALGORITHM
+    function loadDailyMorningVerse() {
+      const now = new Date();
+      // Calculate date-based seed shifting exactly at 5:00 AM
+      const effectiveDate = new Date(now.getTime() - (5 * 60 * 60 * 1000));
+      const dayOfYear = Math.floor((effectiveDate - new Date(effectiveDate.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+      
+      currentTheme = "ALL";
+      initThemeBadges();
+      filteredList = [...scriptureDatabase];
+      currentIndex = dayOfYear % filteredList.length;
+
+      updateDropdown();
+      alert(`🌅 Loaded today's verse for ${effectiveDate.toLocaleDateString()}`);
+    }
+
     const logoImg = new Image();
     logoImg.src = "logo.png";
     const qrImg = new Image();
@@ -349,7 +356,7 @@
       });
     }
 
-    // DURATION-LOCKED AUDIO ENGINE
+    // INTERACTIVE AUDIO ENGINE WITH LIVE IN-POINT MARKER
     let audioCtx = null;
     let analyserNode = null;
     let audioSourceNode = null;
@@ -357,31 +364,26 @@
     let audioDataArray = null;
     let hasCustomAudio = false;
     let audioTrimStart = 0;
-    let isPreviewing = false;
-    let previewTimer = null;
+    let isFullPlaying = false;
+    let isTestingClip = false;
+    let clipTimer = null;
 
     function handleAudioUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
 
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-
-      if (audioElement) {
-        audioElement.pause();
-        audioElement.remove();
-      }
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioElement) { audioElement.pause(); audioElement.remove(); }
 
       audioElement = document.createElement("audio");
       audioElement.src = URL.createObjectURL(file);
 
-      audioElement.onloadedmetadata = function() {
-        const scrubber = document.getElementById("audioScrubber");
-        scrubber.max = Math.max(0, audioElement.duration - selectedDuration);
-        scrubber.value = 0;
-        audioTrimStart = 0;
-        updateScrubberTime(0);
+      audioElement.ontimeupdate = () => {
+        document.getElementById("currPlayTime").innerText = formatTime(audioElement.currentTime);
+      };
+
+      audioElement.onloadedmetadata = () => {
+        clampAndRefreshTrimmer();
       };
 
       analyserNode = audioCtx.createAnalyser();
@@ -401,44 +403,88 @@
       return `${m}:${s < 10 ? '0' : ''}${s}`;
     }
 
-    function updateScrubberTime(val) {
-      audioTrimStart = parseFloat(val);
-      const audioTrimEnd = audioTrimStart + selectedDuration;
-      
-      document.getElementById("startTimeDisplay").innerText = formatTime(audioTrimStart);
-      document.getElementById("endTimeDisplay").innerText = formatTime(audioTrimEnd);
+    function clampAndRefreshTrimmer() {
+      const scrubber = document.getElementById("audioScrubber");
+      const maxStart = Math.max(0, audioElement.duration - selectedDuration);
+      scrubber.max = maxStart;
+      if (audioTrimStart > maxStart) audioTrimStart = maxStart;
+      scrubber.value = audioTrimStart;
+
+      const end = audioTrimStart + selectedDuration;
+      document.getElementById("clipRangeDisplay").innerText = `${formatTime(audioTrimStart)} ➔ ${formatTime(end)}`;
       document.getElementById("clipSpanDisplay").innerText = `${selectedDuration}s`;
     }
 
-    function previewHypedTimephrase() {
-      if (!audioElement) {
-        alert("Please attach an audio track first.");
-        return;
-      }
-      const previewBtn = document.getElementById("trimPreviewBtn");
+    function handleManualScrub(val) {
+      audioTrimStart = parseFloat(val);
+      const end = audioTrimStart + selectedDuration;
+      document.getElementById("clipRangeDisplay").innerText = `${formatTime(audioTrimStart)} ➔ ${formatTime(end)}`;
+    }
 
-      if (isPreviewing) {
-        audioElement.pause();
-        clearTimeout(previewTimer);
-        isPreviewing = false;
-        previewBtn.classList.remove("playing");
-        previewBtn.innerText = "▶ Test Clip";
-        return;
-      }
-
+    function togglePlayFull() {
+      if (!audioElement) return alert("Attach an audio file first!");
       if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+
+      const btn = document.getElementById("btnPlayAll");
+      if (isFullPlaying) {
+        audioElement.pause();
+        isFullPlaying = false;
+        btn.innerText = "▶ Play Audio";
+      } else {
+        if (isTestingClip) stopClipTest();
+        audioElement.play();
+        isFullPlaying = true;
+        btn.innerText = "⏸ Pause";
+      }
+    }
+
+    function markInPoint() {
+      if (!audioElement) return alert("Attach audio first!");
+      const currentSec = audioElement.currentTime;
+      const maxStart = Math.max(0, audioElement.duration - selectedDuration);
+      audioTrimStart = Math.min(currentSec, maxStart);
+
+      document.getElementById("audioScrubber").value = audioTrimStart;
+      const end = audioTrimStart + selectedDuration;
+      document.getElementById("clipRangeDisplay").innerText = `${formatTime(audioTrimStart)} ➔ ${formatTime(end)}`;
+
+      // Brief flash to confirm marked in-point
+      const btn = event.target;
+      btn.style.background = "#10b981";
+      btn.innerText = "✅ Start Set!";
+      setTimeout(() => { btn.style.background = "#f59e0b"; btn.innerText = "🎯 Mark Start"; }, 1200);
+    }
+
+    function testTrimmedSpan() {
+      if (!audioElement) return alert("Attach audio first!");
+      if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+
+      const testBtn = document.getElementById("btnTestClip");
+      if (isTestingClip) {
+        stopClipTest();
+        return;
+      }
+
+      if (isFullPlaying) togglePlayFull();
+
       audioElement.currentTime = audioTrimStart;
       audioElement.play();
-      isPreviewing = true;
-      previewBtn.classList.add("playing");
-      previewBtn.innerText = "⏹ Stop Preview";
+      isTestingClip = true;
+      testBtn.innerText = "⏹ Stop";
+      testBtn.style.background = "#ef4444";
 
-      previewTimer = setTimeout(() => {
-        audioElement.pause();
-        isPreviewing = false;
-        previewBtn.classList.remove("playing");
-        previewBtn.innerText = "▶ Test Clip";
+      clipTimer = setTimeout(() => {
+        stopClipTest();
       }, selectedDuration * 1000);
+    }
+
+    function stopClipTest() {
+      if (audioElement) audioElement.pause();
+      clearTimeout(clipTimer);
+      isTestingClip = false;
+      const testBtn = document.getElementById("btnTestClip");
+      testBtn.innerText = "🔁 Test Span";
+      testBtn.style.background = "#10b981";
     }
 
     function copyFullMetadata() {
@@ -540,7 +586,7 @@
         `${item.verseTitle} 🙏 | ${item.reference}${songPart} #Shorts #TeluguChristian #MotivatingChristian`;
     }
 
-    // ANIMATION ENGINE
+    // MAIN ANIMATION LOOP
     function startAnimationLoop() {
       const canvas = document.getElementById("shortsCanvas");
       const ctx = canvas.getContext("2d");
@@ -554,7 +600,7 @@
           const rotAngle = (time / 8000) % (Math.PI * 2);
           const songText = getDisplaySong();
 
-          // 1. Gradient Background
+          // 1. Theme Gradient
           const bgGrad = ctx.createLinearGradient(0, 0, 0, 1920);
           bgGrad.addColorStop(0, style.bgTop);
           bgGrad.addColorStop(0.35, style.bgMid);
@@ -563,7 +609,7 @@
           ctx.fillStyle = bgGrad;
           ctx.fillRect(0, 0, 1080, 1920);
 
-          // 2. God-Rays
+          // 2. Volumetric God-Rays
           ctx.save();
           ctx.translate(540, 290);
           ctx.rotate(rotAngle);
