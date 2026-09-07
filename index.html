@@ -3,26 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Motivating Christian - Unlimited Bible Shorts Studio</title>
+  <title>Motivating Christian - Daily Bible Shorts Studio</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: #090d16; color: #f8fafc; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 16px; }
-    
     header { text-align: center; margin-bottom: 16px; }
     h1 { color: #f59e0b; font-size: 20px; letter-spacing: 0.5px; margin-bottom: 4px; }
     p.sub { color: #94a3b8; font-size: 12px; }
 
-    .container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; max-width: 1020px; width: 100%; }
+    .container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; max-width: 1040px; width: 100%; }
 
-    /* Control Panel */
     .controls { background: #131b2e; border: 1px solid #1e293b; border-radius: 14px; padding: 18px; flex: 1; min-width: 340px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     label { font-size: 11px; color: #f59e0b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
     select, input, textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0a0f1d; color: #fff; font-size: 13px; outline: none; }
     textarea { resize: vertical; height: 75px; line-height: 1.4; }
-    
-    .toggle-bar { display: flex; background: #0a0f1d; border-radius: 8px; padding: 3px; border: 1px solid #1e293b; }
-    .toggle-btn { flex: 1; padding: 7px; font-size: 11px; background: transparent; color: #94a3b8; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; text-align: center; }
-    .toggle-btn.active { background: #f59e0b; color: #000; font-weight: 700; }
+
+    .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
     .btn-row { display: flex; gap: 10px; margin-top: 4px; }
     button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; }
@@ -34,7 +30,6 @@
     .info-card { background: #0a0f1d; border: 1px solid #1e293b; border-radius: 8px; padding: 12px; font-size: 12px; line-height: 1.6; }
     .info-title { color: #f59e0b; font-weight: bold; margin-bottom: 4px; }
 
-    /* 9:16 Shorts Canvas Preview */
     .preview-box { display: flex; flex-direction: column; align-items: center; }
     canvas { width: 270px; height: 480px; border-radius: 18px; box-shadow: 0 15px 40px rgba(0,0,0,0.8); border: 2px solid #f59e0b; }
   </style>
@@ -43,46 +38,36 @@
 
   <header>
     <h1>MOTIVATING CHRISTIAN • SHORTS STUDIO</h1>
-    <p class="sub">Unlimited Scripture Library + Custom Verse & Song Generator</p>
+    <p class="sub">Dynamic Daily Devotional & Unlimited Telugu Scripture Engine</p>
   </header>
 
   <div class="container">
     <div class="controls">
       
-      <!-- Toggle: Pre-Loaded 30-Day Library vs Unlimited Custom Maker -->
-      <div class="toggle-bar">
-        <button id="tabLibrary" class="toggle-btn active" onclick="switchMode('library')">📚 30-Day Curated Library</button>
-        <button id="tabCustom" class="toggle-btn" onclick="switchMode('custom')">✍️ Custom / Any Verse</button>
+      <!-- Category & Date Selector -->
+      <div class="filter-grid">
+        <div>
+          <label>Theme Category</label>
+          <select id="categorySelect" onchange="filterByCategory()">
+            <option value="ALL">అన్ని వాక్యాలు (All Themes)</option>
+            <option value="PROMISE">వాగ్దానాలు (Promises)</option>
+            <option value="PEACE">ఆదరణ & శాంతి (Peace & Comfort)</option>
+            <option value="FAITH">విశ్వాసం & బలం (Faith & Strength)</option>
+            <option value="HEALING">స్వస్థత & విడుదల (Healing & Grace)</option>
+            <option value="PRAISE">స్తుతి & కృతజ్ఞత (Praise & Worship)</option>
+          </select>
+        </div>
+        <div>
+          <label>Calendar Day</label>
+          <button class="btn-primary" style="padding: 10px; font-size: 12px;" onclick="loadTodayVerse()">📅 Load Today's Verse</button>
+        </div>
       </div>
 
-      <!-- Mode 1: Curated Library Dropdown -->
-      <div id="librarySection">
-        <label>Select Daily Scripture</label>
+      <div>
+        <label>Select Specific Scripture</label>
         <select id="entrySelect" onchange="loadSelectedEntry()"></select>
       </div>
 
-      <!-- Mode 2: Custom Verse Input (Unlimited Freedom) -->
-      <div id="customSection" style="display: none; flex-direction: column; gap: 10px;">
-        <div>
-          <label>Header Title (e.g. నేటి వాగ్దానం)</label>
-          <input type="text" id="customTitle" value="నేటి దేవుని వాగ్దానం">
-        </div>
-        <div>
-          <label>Telugu Verse (Lines separated by enter)</label>
-          <textarea id="customVerse">యెహోవా నా కాపరి,&#10;నాకు లేమి కలుగదు;&#10;ఆయన నన్ను నడిపించును.</textarea>
-        </div>
-        <div>
-          <label>Scripture Reference</label>
-          <input type="text" id="customRef" value="— కీర్తనలు 23:1">
-        </div>
-        <div>
-          <label>Connected Worship Song Title</label>
-          <input type="text" id="customSong" value="యెహోవా నా కాపరి (Yehova Naa Kaapari)">
-        </div>
-        <button class="btn-primary" style="padding: 8px; font-size: 11px;" onclick="applyCustomVerse()">⚡ Render Custom Verse</button>
-      </div>
-
-      <!-- Live Metadata Display -->
       <div class="info-card">
         <div class="info-title">🎵 Connected Telugu Worship Song:</div>
         <div id="songTitle" style="font-weight: 700; color: #facc15;">—</div>
@@ -100,134 +85,47 @@
       </div>
     </div>
 
-    <!-- 9:16 Live Canvas Preview -->
     <div class="preview-box">
       <canvas id="shortsCanvas" width="1080" height="1920"></canvas>
     </div>
   </div>
 
   <script>
-    // EXPANDED CURATED 30-DAY THEMES (Verses & Classic Songs)
-    const library = [
-      {
-        verseTitle: "నేటి దేవుని వాగ్దానం",
-        verseLines: ["భయపడకుము నేను నీకు తోడైయున్నాను,", "దిగులుపడకుము నేను నీ దేవుడనై యున్నాను;", "నేను నిన్ను బలపరతును."],
-        reference: "— యెషయా 41:10",
-        songName: "నీ కృపయే నా ఆశ్రయం (Nee Krupaye Naa Aasrayam)",
-        songThemes: "కష్టాల్లో దేవుని అద్భుతమైన తోడు మరియు కృప."
-      },
-      {
-        verseTitle: "నిత్యమైన కాపుదల",
-        verseLines: ["యెహోవా నా కాపరి,", "నాకు లేమి కలుగదు;", "పచ్చికగల చోట్ల నన్ను పరుండజేయును."],
-        reference: "— కీర్తనలు 23:1-2",
-        songName: "యెహోవా నా కాపరి (Yehova Naa Kaapari)",
-        songThemes: "దేవుని నిత్య నడిపింపు, శాంతి మరియు సమృద్ధి."
-      },
-      {
-        verseTitle: "మేలైన తలంపులు",
-        verseLines: ["మీరు నిరీక్షణ కలిగియుండునట్లు", "నేను మీ విషయమై తలంచుచున్న", "సమాధానకరమైన తలంపులే."],
-        reference: "— యిర్మియా 29:11",
-        songName: "యేసయ్యా నీ ప్రేమ నాపై ఎంతో (Yesayya Nee Prema)",
-        songThemes: "మన భవిష్యత్తుపై దేవునికున్న శ్రేష్టమైన సంకల్పం."
-      },
-      {
-        verseTitle: "ప్రార్థనకు జవాబు",
-        verseLines: ["అడుగుడి మీకియ్యబడును,", "వెదకుడి మీకు దొరకును,", "తట్టుడి మీకు తీయబడును."],
-        reference: "— మత్తయి 7:7",
-        songName: "ప్రార్థన శక్తిగలది (Praarthana Shakthigaladi)",
-        songThemes: "విశ్వాసంతో చేసే ప్రార్థనకు దేవుడిచ్చే జవాబు."
-      },
-      {
-        verseTitle: "నిత్యజీవపు వాగ్దానం",
-        verseLines: ["ఆయనయందు విశ్వాసముంచు ప్రతివాడును", "నశింపక నిత్యజీవము పొందునట్లు", "దేవుడు తన కుమారుని అనుగ్రహించెను."],
-        reference: "— యోహాను 3:16",
-        songName: "సిలువ చెంతకు చేరినప్పుడు (Siluva Chenthaku)",
-        songThemes: "యేసుక్రీస్తు కలువరి సిలువ త్యాగం మరియు రక్షణ."
-      },
-      {
-        verseTitle: "కృతజ్ఞతా స్తుతులు",
-        verseLines: ["నా ప్రాణమా, యెహోవాను స్తుతించుము;", "నా అంతరంగముననున్న సమస్తమా,", "ఆయన పరిశుద్ధ నామమును స్తుతించుము."],
-        reference: "— కీర్తనలు 103:1",
-        songName: "స్తోత్రము స్తుతి స్తోత్రము (Sthothramu Sthuthi)",
-        songThemes: "దేవుడు చేసిన సమస్త ఉపకారములకు నిత్య స్తుతి."
-      },
-      {
-        verseTitle: "ఆయన మన బలము",
-        verseLines: ["నన్ను బలపరచువానియందే", "నేను సమస్తమును", "చేయగలనెను."],
-        reference: "— ఫిలిప్పీయులకు 4:13",
-        songName: "యేసే నా బలము యేసే నా జీవము",
-        songThemes: "బలహీనతలలో దేవుని శక్తి సంపూర్ణమగును."
-      },
-      {
-        verseTitle: "దేవుని శాంతి",
-        verseLines: ["శాంతి మీకు అనుగ్రహించి వెళ్లుచున్నాను,", "నా శాంతినే మీకిచ్చుచున్నాను;", "మీ హృదయమును కలవరపడనియ్యకుడి."],
-        reference: "— యోహాను 14:27",
-        songName: "నా హృదయములో నీ శాంతి (Samadhaana Kartha)",
-        songThemes: "లోకమివ్వలేని దేవుని అద్భుత సమాధానం."
-      },
-      {
-        verseTitle: "భారము మోయువాడు",
-        verseLines: ["నీ భారము యెహోవామీద మోపుము,", "ఆయన నిన్ను ఆదుకొనును;", "నీతిమంతుని ఎన్నడును కదలనీయడు."],
-        reference: "— కీర్తనలు 55:22",
-        songName: "భారము మోసే నా ప్రియ యేసు",
-        songThemes: "మన సమస్త చింతలను ఆయనపై మోపుట."
-      },
-      {
-        verseTitle: "దేవుని వెలుగు",
-        verseLines: ["యెహోవా నాకు వెలుగును రక్షణయునై యున్నాడు,", "నేను ఎవరికి భయపడుదును?", "ఆయన నా ప్రాణదుర్గము."],
-        reference: "— కీర్తనలు 27:1",
-        songName: "యెహోవాయే నా వెలుగు (Yehovaye Naa Velugu)",
-        songThemes: "చీకటిలో వెలిగే దేవుని నిత్య దీపం."
-      },
-      {
-        verseTitle: "ఆరోగ్యపు వాగ్దానం",
-        verseLines: ["నేను నీకు ఆరోగ్యము రప్పించెదను,", "నీ గాయములను మాన్పెదను;", "ఇది యెహోవా వాక్కు."],
-        reference: "— యిర్మియా 30:17",
-        songName: "స్వస్థపరచు యెహోవావు నీవే (Yehova Rapha)",
-        songThemes: "శరీరమునకు మరియు ఆత్మకు దైవిక స్వస్థత."
-      },
-      {
-        verseTitle: "కొత్త బలము",
-        verseLines: ["యెహోవాకొరకు ఎదురుచూచువారు", "నూతన బలము పొందుదురు;", "వారు పక్షిరాజులవలె రెక్కలు చాచి పైకెగయుదురు."],
-        reference: "— యెషయా 40:31",
-        songName: "పక్షిరాజు వలె నూతన బలముతో",
-        songThemes: "విశ్వాసములో ఎన్నడూ అలసిపోని నిరీక్షణ."
-      },
-      {
-        verseTitle: "రక్షణ శృంగము",
-        verseLines: ["యెహోవా నా బండ, నా కోట,", "నన్ను రక్షించువాడు, నా దేవుడు,", "నేను ఆశ్రయించు నా కేడెము."],
-        reference: "— కీర్తనలు 18:2",
-        songName: "నా ఆశ్రయ దుర్గమా నా యేసయ్యా",
-        songThemes: "ఆపత్కాలములో మనకున్న బలమైన ఆశ్రయం."
-      },
-      {
-        verseTitle: "పరిశుద్ధాత్మ నడిపింపు",
-        verseLines: ["నీ వాక్యము నా పాదములకు దీపమును", "నా త్రోవకు వెలుగునై యున్నది."],
-        reference: "— కీర్తనలు 119:105",
-        songName: "వాక్యమే ప్రాణము వాక్యమే వెలుగు",
-        songThemes: "జీవిత ప్రయాణంలో దైవవాక్య మార్గదర్శకత్వం."
-      },
-      {
-        verseTitle: "ఆశ్చర్యకార్యములు",
-        verseLines: ["మనుష్యులకు అసాధ్యమైనవి", "దేవునికి సమస్తమును", "సాధ్యమే."],
-        reference: "— లూకా 18:27",
-        songName: "అసాధ్యమైనది ఏదీ లేదు (Asadhyamainadi)",
-        songThemes: "దేవుని సర్వశక్తిమంతమైన కార్యములు."
-      }
+    // EXPANDED MULTI-CATEGORY TELUGU SCRIPTURE ARCHIVE
+    const defaultArchive = [
+      // PROMISES
+      { cat: "PROMISE", day: 1, verseTitle: "నేటి దేవుని వాగ్దానం", verseLines: ["భయపడకుము నేను నీకు తోడైయున్నాను,", "దిగులుపడకుము నేను నీ దేవుడనై యున్నాను;", "నేను నిన్ను బలపరతును."], reference: "— యెషయా 41:10", songName: "నీ కృపయే నా ఆశ్రయం (Nee Krupaye Naa Aasrayam)", songThemes: "కష్టాల్లో దేవుని అద్భుతమైన తోడు మరియు కృప." },
+      { cat: "PROMISE", day: 2, verseTitle: "నిత్యమైన కాపుదల", verseLines: ["యెహోవా నా కాపరి,", "నాకు లేమి కలుగదు;", "పచ్చికగల చోట్ల నన్ను పరుండజేయును."], reference: "— కీర్తనలు 23:1-2", songName: "యెహోవా నా కాపరి (Yehova Naa Kaapari)", songThemes: "దేవుని నిత్య నడిపింపు, శాంతి మరియు సమృద్ధి." },
+      { cat: "PROMISE", day: 3, verseTitle: "మేలైన తలంపులు", verseLines: ["మీరు నిరీక్షణ కలిగియుండునట్లు", "నేను మీ విషయమై తలంచుచున్న", "సమాధానకరమైన తలంపులే."], reference: "— యిర్మియా 29:11", songName: "యేసయ్యా నీ ప్రేమ నాపై ఎంతో (Yesayya Nee Prema)", songThemes: "మన భవిష్యత్తుపై దేవునికున్న శ్రేష్టమైన సంకల్పం." },
+      { cat: "PROMISE", day: 4, verseTitle: "ప్రార్థనకు జవాబు", verseLines: ["అడుగుడి మీకియ్యబడును,", "వెదకుడి మీకు దొరకును,", "తట్టుడి మీకు తీయబడును."], reference: "— మత్తయి 7:7", songName: "ప్రార్థన శక్తిగలది (Praarthana Shakthigaladi)", songThemes: "విశ్వాసంతో చేసే ప్రార్థనకు దేవుడిచ్చే జవాబు." },
+      { cat: "PROMISE", day: 5, verseTitle: "నిత్యజీవపు వాగ్దానం", verseLines: ["ఆయనయందు విశ్వాసముంచు ప్రతివాడును", "నశింపక నిత్యజీవము పొందునట్లు", "దేవుడు తన కుమారుని అనుగ్రహించెను."], reference: "— యోహాను 3:16", songName: "సిలువ చెంతకు చేరినప్పుడు (Siluva Chenthaku)", songThemes: "యేసుక్రీస్తు కలువరి సిలువ త్యాగం మరియు రక్షణ." },
+      { cat: "PROMISE", day: 6, verseTitle: "సహాయకరమైన దేవుడు", verseLines: ["పర్వతములతట్టు నా కన్నులెత్తుచున్నాను", "నాకు సహాయము ఎక్కడనుండి వచ్చును?", "యెహోవావలననే నాకు సహాయము కలుగును."], reference: "— కీర్తనలు 121:1-2", songName: "కొండలతట్టు నా కన్నులెత్తుదును", songThemes: "సృష్టికర్త అయిన దేవుని నుండి వచ్చే నిత్య సహాయం." },
+
+      // PEACE & COMFORT
+      { cat: "PEACE", day: 7, verseTitle: "దేవుని శాంతి", verseLines: ["శాంతి మీకు అనుగ్రహించి వెళ్లుచున్నాను,", "నా శాంతినే మీకిచ్చుచున్నాను;", "మీ హృదయమును కలవరపడనియ్యకుడి."], reference: "— యోహాను 14:27", songName: "నా హృదయములో నీ శాంతి (Samadhaana Kartha)", songThemes: "లోకమివ్వలేని దేవుని అద్భుత సమాధానం." },
+      { cat: "PEACE", day: 8, verseTitle: "భారము మోయువాడు", verseLines: ["నీ భారము యెహోవామీద మోపుము,", "ఆయన నిన్ను ఆదుకొనును;", "నీతిమంతుని ఎన్నడును కదలనీయడు."], reference: "— కీర్తనలు 55:22", songName: "భారము మోసే నా ప్రియ యేసు", songThemes: "మన సమస్త చింతలను ఆయనపై మోపుట." },
+      { cat: "PEACE", day: 9, verseTitle: "ఆశ్రయ దుర్గము", verseLines: ["దేవుడు మనకు ఆశ్రయమును బలమునై యున్నాడు,", "ఆపత్కాలములో ఆయన నమ్ముకొనదగిన", "సహాయకుడు."], reference: "— కీర్తనలు 46:1", songName: "నా ఆశ్రయ దుర్గమా నా యేసయ్యా", songThemes: "తుఫానులలో మరియు శ్రమలలో దేవుడే దుర్గం." },
+      { cat: "PEACE", day: 10, verseTitle: "విశ్రాంతినిచ్చు దేవుడు", verseLines: ["ప్రయాసపడి భారము మోసికొనుచున్న", "సమస్త జనులారా, నా యొద్దకు రండి;", "నేను మీకు విశ్రాంతి కలుగజేతును."], reference: "— మత్తయి 11:28", songName: "రారండి యేసుని యొద్దకు", songThemes: "క్రీస్తు పాదాల చెంత లభించే పరిపూర్ణ విశ్రాంతి." },
+
+      // FAITH & STRENGTH
+      { cat: "FAITH", day: 11, verseTitle: "ఆయన మన బలము", verseLines: ["నన్ను బలపరచువానియందే", "నేను సమస్తమును", "చేయగలనెను."], reference: "— ఫిలిప్పీయులకు 4:13", songName: "యేసే నా బలము యేసే నా జీవము", songThemes: "బలహీనతలలో దేవుని శక్తి సంపూర్ణమగును." },
+      { cat: "FAITH", day: 12, verseTitle: "కొత్త బలము", verseLines: ["యెహోవాకొరకు ఎదురుచూచువారు", "నూతన బలము పొందుదురు;", "వారు పక్షిరాజులవలె రెక్కలు చాచి పైకెగయుదురు."], reference: "— యెషయా 40:31", songName: "పక్షిరాజు వలె నూతన బలముతో", songThemes: "విశ్వాసములో ఎన్నడూ అలసిపోని నిరీక్షణ." },
+      { cat: "FAITH", day: 13, verseTitle: "ఆశ్చర్యకార్యములు", verseLines: ["మనుష్యులకు అసాధ్యమైనవి", "దేవునికి సమస్తమును", "సాధ్యమే."], reference: "— లూకా 18:27", songName: "అసాధ్యమైనది ఏదీ లేదు (Asadhyamainadi)", songThemes: "దేవుని సర్వశక్తిమంతమైన అద్భుతాలు." },
+      { cat: "FAITH", day: 14, verseTitle: "దేవుని వెలుగు", verseLines: ["యెహోవా నాకు వెలుగును రక్షణయునై యున్నాడు,", "నేను ఎవరికి భయపడుదును?", "ఆయన నా ప్రాణదుర్గము."], reference: "— కీర్తనలు 27:1", songName: "యెహోవాయే నా వెలుగు (Yehovaye Naa Velugu)", songThemes: "చీకటిలో వెలిగే దేవుని నిత్య దీపం." },
+
+      // HEALING & GRACE
+      { cat: "HEALING", day: 15, verseTitle: "ఆరోగ్యపు వాగ్దానం", verseLines: ["నేను నీకు ఆరోగ్యము రప్పించెదను,", "నీ గాయములను మాన్పెదను;", "ఇది యెహోవా వాక్కు."], reference: "— యిర్మియా 30:17", songName: "స్వస్థపరచు యెహోవావు నీవే (Yehova Rapha)", songThemes: "శరీరమునకు మరియు ఆత్మకు దైవిక స్వస్థత." },
+      { cat: "HEALING", day: 16, verseTitle: "గాయములను కట్టువాడు", verseLines: ["గుండె చెదరినవారిని ఆయన బాగుచేయును,", "వారి గాయములను", "కట్టును."], reference: "— కీర్తనలు 147:3", songName: "గాయపడిన మనసా కలత చెందకు", songThemes: "హృదయ వేదనలను తీర్చే క్రీస్తు కనికరం." },
+      { cat: "HEALING", day: 17, verseTitle: "కృప చాలును", verseLines: ["నా కృప నీకు చాలును,", "బలహీనతయందు నా శక్తి", "పరిపూర్ణమగుచున్నది."], reference: "— 2 కొరింథీయులకు 12:9", songName: "కృప కృప నీ కృప చాలయ్యా", songThemes: "జీవిత ప్రయాణాన్ని నడిపించే దైవ కృప." },
+
+      // PRAISE & THANKSGIVING
+      { cat: "PRAISE", day: 18, verseTitle: "కృతజ్ఞతా స్తుతులు", verseLines: ["నా ప్రాణమా, యెహోవాను స్తుతించుము;", "నా అంతరంగముననున్న సమస్తమా,", "ఆయన పరిశుద్ధ నామమును స్తుతించుము."], reference: "— కీర్తనలు 103:1", songName: "స్తోత్రము స్తుతి స్తోత్రము (Sthothramu Sthuthi)", songThemes: "దేవుడు చేసిన సమస్త ఉపకారములకు నిత్య స్తుతి." },
+      { cat: "PRAISE", day: 19, verseTitle: "ఆనంద గానము", verseLines: ["యెహోవాయందు ఆనందించుడి,", "ఆయనయందు ఆనందించుటవలన", "మీకు బలము కలుగును."], reference: "— నెహెమ్యా 8:10", songName: "ఆనందమే నాలో ఆనందమే", songThemes: "ప్రభువు సన్నిధిలో లభించే నిత్యానందం." },
+      { cat: "PRAISE", day: 20, verseTitle: "ఉన్నతమైన దేవుడు", verseLines: ["ఆకాశముకంటె ఆయన దయ గొప్పది,", "మేఘములకంటె ఆయన సత్యము", "విశాలమైనది."], reference: "— కీర్తనలు 108:4", songName: "ఎంత మంచి దేవుడవు యేసయ్యా", songThemes: "దేవుని ఉన్నతమైన మంచితనం మరియు ప్రేమ." }
     ];
 
+    let activeList = [...defaultArchive];
     let currentIndex = 0;
-    let isCustomMode = false;
-    let customItem = null;
-
-    // Populate dropdown
-    const select = document.getElementById("entrySelect");
-    library.forEach((item, idx) => {
-      const opt = document.createElement("option");
-      opt.value = idx;
-      opt.innerText = `${idx + 1}. ${item.verseTitle} (${item.reference.replace('— ', '')}) — ${item.songName.split('(')[0]}`;
-      select.appendChild(opt);
-    });
 
     const logoImg = new Image();
     logoImg.src = "logo.png";
@@ -235,59 +133,53 @@
     qrImg.src = "qr.png";
 
     function onImageReady() {
-      renderCurrentView();
+      renderCanvas(activeList[currentIndex]);
     }
     logoImg.onload = onImageReady;
     qrImg.onload = onImageReady;
 
-    function switchMode(mode) {
-      if (mode === 'library') {
-        isCustomMode = false;
-        document.getElementById('librarySection').style.display = 'block';
-        document.getElementById('customSection').style.display = 'none';
-        document.getElementById('tabLibrary').classList.add('active');
-        document.getElementById('tabCustom').classList.remove('active');
-        renderCurrentView();
-      } else {
-        isCustomMode = true;
-        document.getElementById('librarySection').style.display = 'none';
-        document.getElementById('customSection').style.display = 'flex';
-        document.getElementById('tabCustom').classList.add('active');
-        document.getElementById('tabLibrary').classList.remove('active');
-        applyCustomVerse();
-      }
+    function populateSelectOptions() {
+      const select = document.getElementById("entrySelect");
+      select.innerHTML = "";
+      activeList.forEach((item, idx) => {
+        const opt = document.createElement("option");
+        opt.value = idx;
+        opt.innerText = `${idx + 1}. ${item.verseTitle} (${item.reference.replace('— ', '')}) — ${item.songName.split('(')[0]}`;
+        select.appendChild(opt);
+      });
+      select.value = currentIndex;
     }
 
-    function applyCustomVerse() {
-      const title = document.getElementById('customTitle').value.trim();
-      const rawVerse = document.getElementById('customVerse').value.trim();
-      const ref = document.getElementById('customRef').value.trim();
-      const song = document.getElementById('customSong').value.trim();
-
-      customItem = {
-        verseTitle: title || "నేటి దేవుని వాగ్దానం",
-        verseLines: rawVerse ? rawVerse.split('\n') : ["దేవుని వాక్యము సజీవమైనది."],
-        reference: ref || "— బైబిల్ గ్రంథము",
-        songName: song || "ఆరాధన గీతం",
-        songThemes: "వ్యక్తిగతంగా ఎంచుకున్న దైవ వాక్యం మరియు స్తుతి గీతం."
-      };
-
-      renderCanvas(customItem);
+    function filterByCategory() {
+      const cat = document.getElementById("categorySelect").value;
+      if (cat === "ALL") {
+        activeList = [...defaultArchive];
+      } else {
+        activeList = defaultArchive.filter(item => item.cat === cat);
+      }
+      currentIndex = 0;
+      populateSelectOptions();
+      renderCanvas(activeList[currentIndex]);
     }
 
-    function renderCurrentView() {
-      if (isCustomMode && customItem) {
-        renderCanvas(customItem);
-      } else {
-        renderCanvas(library[currentIndex]);
-      }
+    function loadTodayVerse() {
+      const dayOfMonth = new Date().getDate(); // 1 to 31
+      document.getElementById("categorySelect").value = "ALL";
+      activeList = [...defaultArchive];
+      
+      // Match day of month or loop mathematically
+      const matchedIdx = activeList.findIndex(item => item.day === dayOfMonth);
+      currentIndex = matchedIdx !== -1 ? matchedIdx : (dayOfMonth % activeList.length);
+      
+      populateSelectOptions();
+      renderCanvas(activeList[currentIndex]);
     }
 
     function renderCanvas(item) {
       const canvas = document.getElementById("shortsCanvas");
       const ctx = canvas.getContext("2d");
 
-      // 1. Dark Aesthetic Background
+      // Background Gradient
       const bgGrad = ctx.createLinearGradient(0, 0, 0, 1920);
       bgGrad.addColorStop(0, "#050914");
       bgGrad.addColorStop(0.4, "#0f172a");
@@ -296,7 +188,7 @@
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, 1080, 1920);
 
-      // 2. Divine Sunburst Glow Behind Logo
+      // Sunburst Glow
       const sunGlow = ctx.createRadialGradient(540, 290, 40, 540, 290, 500);
       sunGlow.addColorStop(0, "rgba(245, 158, 11, 0.35)");
       sunGlow.addColorStop(0.5, "rgba(245, 158, 11, 0.08)");
@@ -304,7 +196,7 @@
       ctx.fillStyle = sunGlow;
       ctx.fillRect(0, 0, 1080, 1920);
 
-      // 3. Double Gold Border Frame
+      // Gold Frames
       ctx.strokeStyle = "rgba(245, 158, 11, 0.35)";
       ctx.lineWidth = 3;
       ctx.strokeRect(36, 36, 1008, 1848);
@@ -313,7 +205,6 @@
       ctx.lineWidth = 1.5;
       ctx.strokeRect(48, 48, 984, 1824);
 
-      // Corner Accents
       const drawCorner = (x, y) => {
         ctx.fillStyle = "#f59e0b";
         ctx.fillRect(x - 6, y - 6, 12, 12);
@@ -323,7 +214,7 @@
       drawCorner(48, 1872);
       drawCorner(1032, 1872);
 
-      // 4. Circular Logo Badge
+      // Circular Logo
       if (logoImg.complete && logoImg.naturalWidth > 0) {
         ctx.save();
         ctx.shadowColor = "rgba(245, 158, 11, 0.6)";
@@ -342,19 +233,18 @@
         ctx.stroke();
       }
 
-      // 5. Header Title Bar
+      // Title & Cross
       ctx.fillStyle = "#f59e0b";
       ctx.font = "bold 46px -apple-system, sans-serif";
       ctx.textAlign = "center";
       ctx.fillText(item.verseTitle, 540, 520);
 
-      // Gold Divider line with Cross
       ctx.fillStyle = "rgba(245, 158, 11, 0.6)";
       ctx.fillRect(320, 545, 170, 3);
       ctx.fillText("✝", 540, 554);
       ctx.fillRect(590, 545, 170, 3);
 
-      // 6. Main Scripture Text (High Readability & Safe Centered Padding)
+      // Scripture Lines
       ctx.fillStyle = "#ffffff";
       ctx.font = "bold 46px -apple-system, sans-serif";
       ctx.shadowColor = "rgba(0, 0, 0, 0.95)";
@@ -366,13 +256,13 @@
         startY += 90;
       });
 
-      // Scripture Reference
+      // Reference
       ctx.fillStyle = "#facc15";
       ctx.font = "italic bold 40px -apple-system, sans-serif";
       ctx.fillText(item.reference, 540, startY + 30);
       ctx.shadowBlur = 0;
 
-      // 7. Connected Worship Song Banner
+      // Song Banner
       ctx.fillStyle = "rgba(245, 158, 11, 0.4)";
       ctx.fillRect(200, 1260, 680, 2);
 
@@ -387,7 +277,7 @@
       ctx.fillStyle = "rgba(245, 158, 11, 0.4)";
       ctx.fillRect(200, 1420, 680, 2);
 
-      // 8. Bottom Section: QR Code & Call to Action
+      // QR Code
       const qrX = 770, qrY = 1530, qrSize = 210;
       if (qrImg.complete && qrImg.naturalWidth > 0) {
         ctx.save();
@@ -401,7 +291,7 @@
         ctx.strokeRect(qrX, qrY, qrSize, qrSize);
       }
 
-      // Left Call to Action
+      // Call to Action
       ctx.textAlign = "left";
       ctx.fillStyle = "#ffffff";
       ctx.font = "bold 38px -apple-system, sans-serif";
@@ -415,7 +305,7 @@
       ctx.font = "24px -apple-system, sans-serif";
       ctx.fillText("👉 Scan QR to Subscribe on YouTube", 90, 1725);
 
-      // Update UI Dashboard Text
+      // Update UI Text
       document.getElementById("songTitle").innerText = item.songName;
       document.getElementById("songDesc").innerText = item.songThemes;
       document.getElementById("ytMeta").innerText = 
@@ -424,28 +314,27 @@
 
     function loadSelectedEntry() {
       currentIndex = parseInt(document.getElementById("entrySelect").value);
-      renderCanvas(library[currentIndex]);
+      renderCanvas(activeList[currentIndex]);
     }
 
     function randomizeTheme() {
-      if (isCustomMode) {
-        switchMode('library');
-      }
-      currentIndex = Math.floor(Math.random() * library.length);
+      currentIndex = Math.floor(Math.random() * activeList.length);
       document.getElementById("entrySelect").value = currentIndex;
-      renderCanvas(library[currentIndex]);
+      renderCanvas(activeList[currentIndex]);
     }
 
     function downloadShortFrame() {
       const canvas = document.getElementById("shortsCanvas");
       const link = document.createElement("a");
-      const nameTag = isCustomMode ? "Custom" : (currentIndex + 1);
-      link.download = `MotivatingChristian_${nameTag}.png`;
+      link.download = `MotivatingChristian_Short_${currentIndex + 1}.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
     }
 
-    window.onload = () => renderCanvas(library[0]);
+    window.onload = () => {
+      populateSelectOptions();
+      loadTodayVerse();
+    };
   </script>
 </body>
 </html>
