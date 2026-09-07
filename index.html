@@ -26,6 +26,7 @@
     .duration-btn { padding: 6px; font-size: 11px; border: 1px solid #334155; border-radius: 6px; background: #0a0f1d; color: #94a3b8; cursor: pointer; font-weight: 600; text-align: center; }
     .duration-btn.active { background: #d97706; color: #fff; border-color: #f59e0b; font-weight: 700; }
 
+    /* Synchronized Duration-Locked Audio Trimmer */
     .audio-panel {
       background: #0a0f1d;
       border: 1px dashed #f59e0b;
@@ -38,7 +39,9 @@
     .audio-panel input[type="file"] { border: none; padding: 0; background: transparent; font-size: 11px; color: #94a3b8; }
     .trimmer-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #cbd5e1; }
     .trimmer-row input[type="range"] { flex: 1; accent-color: #f59e0b; }
-    .btn-trim-preview { padding: 4px 8px; font-size: 11px; background: #334155; border: none; border-radius: 4px; color: #fff; cursor: pointer; font-weight: 600; }
+    .trim-range-badge { display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; font-weight: 600; }
+    .btn-trim-preview { padding: 5px 10px; font-size: 11px; background: #334155; border: none; border-radius: 6px; color: #fff; cursor: pointer; font-weight: 600; white-space: nowrap; }
+    .btn-trim-preview.playing { background: #10b981; }
 
     .yt-search-box { display: flex; gap: 6px; }
     .btn-yt-go { background: #dc2626; color: #fff; border: none; border-radius: 8px; padding: 0 12px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
@@ -78,7 +81,7 @@
 
   <header>
     <h1>MOTIVATING CHRISTIAN • SHORTS STUDIO</h1>
-    <p class="sub">Direct YouTube Song Enactor • Dynamic Custom Overrides • 15s/30s/60s</p>
+    <p class="sub">Duration-Locked Dynamic Audio Trimmer • Direct YouTube Sync</p>
   </header>
 
   <div class="container">
@@ -97,9 +100,9 @@
         </div>
       </div>
 
-      <!-- Duration Selector -->
+      <!-- Duration Selector (Directly drives the trim span) -->
       <div>
-        <label>Shorts Recording Duration</label>
+        <label>Shorts Duration (Trimmer Automatically Matches)</label>
         <div class="duration-grid">
           <button id="dur_15" class="duration-btn active" onclick="setDuration(15)">⚡ 15 Seconds</button>
           <button id="dur_30" class="duration-btn" onclick="setDuration(30)">⏳ 30 Seconds</button>
@@ -122,16 +125,23 @@
         <button id="suggestToggleBtn" class="switch-btn active" onclick="toggleSuggestionColumn()">ENABLED (ON)</button>
       </div>
 
-      <!-- Audio File Panel -->
+      <!-- Dynamic Start-to-End Trimmer Panel -->
       <div>
-        <label>Audio Track (MP3, WAV, M4A, AAC, OGG)</label>
+        <label>Audio Track Trimmer (Start to End)</label>
         <div class="audio-panel">
           <input type="file" id="audioFileInput" accept="audio/*" onchange="handleAudioUpload(event)">
-          <div class="trimmer-row">
-            <span>Trim Start: <b id="startTimeDisplay" style="color:#f59e0b;">0:00</b></span>
-            <input type="range" id="audioScrubber" min="0" max="100" value="0" oninput="updateScrubberTime(this.value)">
-            <button class="btn-trim-preview" onclick="previewHypedTimephrase()">▶ Test Clip</button>
+          
+          <div class="trim-range-badge">
+            <span>Start: <b id="startTimeDisplay" style="color:#f59e0b;">0:00</b></span>
+            <span>Clip Span: <b id="clipSpanDisplay" style="color:#38bdf8;">15s</b></span>
+            <span>End: <b id="endTimeDisplay" style="color:#10b981;">0:15</b></span>
           </div>
+
+          <div class="trimmer-row">
+            <input type="range" id="audioScrubber" min="0" max="100" value="0" step="0.5" oninput="updateScrubberTime(this.value)">
+            <button id="trimPreviewBtn" class="btn-trim-preview" onclick="previewHypedTimephrase()">▶ Test Clip</button>
+          </div>
+          <span style="font-size: 10px; color:#94a3b8;">Slide to set the start; the end timestamp locks to your selected Shorts duration.</span>
         </div>
       </div>
 
@@ -230,6 +240,19 @@
       document.querySelectorAll(".duration-btn").forEach(btn => btn.classList.remove("active"));
       document.getElementById("dur_" + seconds).classList.add("active");
       document.getElementById("recordBtn").innerText = `🎬 Record ${selectedDuration}s`;
+      document.getElementById("clipSpanDisplay").innerText = `${selectedDuration}s`;
+
+      // Recalibrate audio scrubber boundaries to prevent overflow
+      if (audioElement && audioElement.duration) {
+        const scrubber = document.getElementById("audioScrubber");
+        const maxStart = Math.max(0, audioElement.duration - selectedDuration);
+        scrubber.max = maxStart;
+        if (audioTrimStart > maxStart) {
+          audioTrimStart = maxStart;
+          scrubber.value = maxStart;
+        }
+        updateScrubberTime(audioTrimStart);
+      }
     }
 
     function toggleSuggestionColumn() {
@@ -269,7 +292,6 @@
       }
     }
 
-    // Resolves what song should actually be shown (or none if disabled & no custom song)
     function getDisplaySong() {
       if (customSongOverride.length > 0) {
         return customSongOverride;
@@ -327,6 +349,7 @@
       });
     }
 
+    // DURATION-LOCKED AUDIO ENGINE
     let audioCtx = null;
     let analyserNode = null;
     let audioSourceNode = null;
@@ -334,6 +357,8 @@
     let audioDataArray = null;
     let hasCustomAudio = false;
     let audioTrimStart = 0;
+    let isPreviewing = false;
+    let previewTimer = null;
 
     function handleAudioUpload(event) {
       const file = event.target.files[0];
@@ -353,8 +378,9 @@
 
       audioElement.onloadedmetadata = function() {
         const scrubber = document.getElementById("audioScrubber");
-        scrubber.max = Math.max(0, Math.floor(audioElement.duration - selectedDuration));
+        scrubber.max = Math.max(0, audioElement.duration - selectedDuration);
         scrubber.value = 0;
+        audioTrimStart = 0;
         updateScrubberTime(0);
       };
 
@@ -369,11 +395,19 @@
       hasCustomAudio = true;
     }
 
+    function formatTime(secs) {
+      const m = Math.floor(secs / 60);
+      const s = Math.floor(secs % 60);
+      return `${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
     function updateScrubberTime(val) {
       audioTrimStart = parseFloat(val);
-      const mins = Math.floor(audioTrimStart / 60);
-      const secs = Math.floor(audioTrimStart % 60);
-      document.getElementById("startTimeDisplay").innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+      const audioTrimEnd = audioTrimStart + selectedDuration;
+      
+      document.getElementById("startTimeDisplay").innerText = formatTime(audioTrimStart);
+      document.getElementById("endTimeDisplay").innerText = formatTime(audioTrimEnd);
+      document.getElementById("clipSpanDisplay").innerText = `${selectedDuration}s`;
     }
 
     function previewHypedTimephrase() {
@@ -381,11 +415,29 @@
         alert("Please attach an audio track first.");
         return;
       }
+      const previewBtn = document.getElementById("trimPreviewBtn");
+
+      if (isPreviewing) {
+        audioElement.pause();
+        clearTimeout(previewTimer);
+        isPreviewing = false;
+        previewBtn.classList.remove("playing");
+        previewBtn.innerText = "▶ Test Clip";
+        return;
+      }
+
       if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
       audioElement.currentTime = audioTrimStart;
       audioElement.play();
-      setTimeout(() => {
+      isPreviewing = true;
+      previewBtn.classList.add("playing");
+      previewBtn.innerText = "⏹ Stop Preview";
+
+      previewTimer = setTimeout(() => {
         audioElement.pause();
+        isPreviewing = false;
+        previewBtn.classList.remove("playing");
+        previewBtn.innerText = "▶ Test Clip";
       }, selectedDuration * 1000);
     }
 
@@ -488,7 +540,7 @@
         `${item.verseTitle} 🙏 | ${item.reference}${songPart} #Shorts #TeluguChristian #MotivatingChristian`;
     }
 
-    // CONTINUOUS ANIMATION LOOP
+    // ANIMATION ENGINE
     function startAnimationLoop() {
       const canvas = document.getElementById("shortsCanvas");
       const ctx = canvas.getContext("2d");
@@ -502,7 +554,7 @@
           const rotAngle = (time / 8000) % (Math.PI * 2);
           const songText = getDisplaySong();
 
-          // 1. Theme Background
+          // 1. Gradient Background
           const bgGrad = ctx.createLinearGradient(0, 0, 0, 1920);
           bgGrad.addColorStop(0, style.bgTop);
           bgGrad.addColorStop(0.35, style.bgMid);
@@ -511,7 +563,7 @@
           ctx.fillStyle = bgGrad;
           ctx.fillRect(0, 0, 1080, 1920);
 
-          // 2. Rotating Volumetric God-Rays
+          // 2. God-Rays
           ctx.save();
           ctx.translate(540, 290);
           ctx.rotate(rotAngle);
@@ -525,7 +577,7 @@
           }
           ctx.restore();
 
-          // 3. Floating Light Particles
+          // 3. Upward Particles
           particles.forEach(p => {
             p.y -= p.speedY;
             if (p.y < 0) { p.y = 1920; p.x = Math.random() * 1080; }
@@ -538,7 +590,7 @@
             ctx.shadowBlur = 0;
           });
 
-          // 4. Central Glow
+          // 4. Central Sun Glow
           const sunRadius = 520 + pulse * 40;
           const sunGlow = ctx.createRadialGradient(540, 290, 40, 540, 290, sunRadius);
           sunGlow.addColorStop(0, style.glowColor + "0.38)");
@@ -547,7 +599,7 @@
           ctx.fillStyle = sunGlow;
           ctx.fillRect(0, 0, 1080, 1920);
 
-          // 5. Border Frames
+          // 5. Borders
           ctx.strokeStyle = style.borderOuter;
           ctx.lineWidth = 3;
           ctx.strokeRect(36, 36, 1008, 1848);
@@ -601,13 +653,12 @@
           ctx.fillText("✝", 540, 554);
           ctx.fillRect(590, 545, 170, 3);
 
-          // 8. Main Scripture (Vertically balanced if song banner is disabled)
+          // 8. Main Scripture
           ctx.fillStyle = "#ffffff";
           ctx.font = "bold 48px -apple-system, sans-serif";
           ctx.shadowColor = "rgba(0, 0, 0, 0.95)";
           ctx.shadowBlur = 18;
 
-          // If no song is shown, center the text slightly lower for cleaner composition
           let startY = songText ? 780 : 840;
           item.verseLines.forEach(line => {
             ctx.fillText(line, 540, startY);
@@ -619,7 +670,7 @@
           ctx.fillText(item.reference, 540, startY + 32);
           ctx.shadowBlur = 0;
 
-          // 9. CONDITIONAL SONG BANNER & VISUALIZER (Only drawn if a song is active)
+          // 9. CONDITIONAL SONG BANNER & VISUALIZER
           if (songText) {
             ctx.fillStyle = style.borderOuter;
             ctx.fillRect(200, 1240, 680, 2);
@@ -690,7 +741,7 @@
       requestAnimationFrame(drawFrame);
     }
 
-    // RECORDING ENGINE
+    // MULTI-DURATION RECORDING ENGINE
     let isRecording = false;
 
     function recordVideo() {
