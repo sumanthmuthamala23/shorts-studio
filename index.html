@@ -14,22 +14,18 @@
 
     .container { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; max-width: 1080px; width: 100%; }
 
-    /* Control Panel */
     .controls { background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; padding: 16px; flex: 1; min-width: 340px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
     label { font-size: 11px; color: #f59e0b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
     select, input { width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid #334155; background: #0a0f1d; color: #fff; font-size: 12px; outline: none; }
     
-    /* 6 Visual Themes Grid */
     .style-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
     .style-btn { padding: 7px 4px; font-size: 11px; border: 1px solid #334155; border-radius: 6px; background: #0a0f1d; color: #cbd5e1; cursor: pointer; font-weight: 600; text-align: center; }
     .style-btn.active { border-color: #f59e0b; background: #1e293b; color: #f59e0b; font-weight: 700; }
 
-    /* Duration Selector */
     .duration-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
     .duration-btn { padding: 6px; font-size: 11px; border: 1px solid #334155; border-radius: 6px; background: #0a0f1d; color: #94a3b8; cursor: pointer; font-weight: 600; text-align: center; }
     .duration-btn.active { background: #d97706; color: #fff; border-color: #f59e0b; font-weight: 700; }
 
-    /* Audio Box */
     .audio-panel {
       background: #0a0f1d;
       border: 1px dashed #f59e0b;
@@ -44,13 +40,10 @@
     .trimmer-row input[type="range"] { flex: 1; accent-color: #f59e0b; }
     .btn-trim-preview { padding: 4px 8px; font-size: 11px; background: #334155; border: none; border-radius: 4px; color: #fff; cursor: pointer; font-weight: 600; }
 
-    /* Search & Song Enactor */
-    .search-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .yt-search-box { display: flex; gap: 6px; }
     .btn-yt-go { background: #dc2626; color: #fff; border: none; border-radius: 8px; padding: 0 12px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
     .btn-yt-go:hover { background: #b91c1c; }
 
-    /* Toggle Suggestion Switch */
     .toggle-row { display: flex; justify-content: space-between; align-items: center; background: #0a0f1d; border: 1px solid #1e293b; padding: 6px 10px; border-radius: 8px; font-size: 11px; color: #cbd5e1; }
     .switch-btn { background: #334155; color: #94a3b8; border: none; border-radius: 6px; padding: 4px 10px; font-size: 10px; font-weight: 700; cursor: pointer; }
     .switch-btn.active { background: #10b981; color: #fff; }
@@ -59,7 +52,6 @@
     .badge { font-size: 10px; padding: 4px 8px; border-radius: 6px; background: #0a0f1d; border: 1px solid #334155; color: #94a3b8; cursor: pointer; transition: 0.2s; white-space: nowrap; }
     .badge:hover, .badge.active { background: #f59e0b; color: #000; font-weight: 700; border-color: #f59e0b; }
 
-    /* Action Buttons */
     .btn-row { display: grid; grid-template-columns: 1fr 1fr 1.3fr; gap: 6px; margin-top: 4px; }
     button.action-btn { padding: 11px 6px; border: none; border-radius: 8px; font-weight: 700; font-size: 11px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px; }
     .btn-primary { background: #d97706; color: #fff; }
@@ -78,7 +70,6 @@
     .info-card { background: #0a0f1d; border: 1px solid #1e293b; border-radius: 8px; padding: 10px; font-size: 12px; line-height: 1.5; }
     .info-title { color: #f59e0b; font-weight: bold; margin-bottom: 2px; }
 
-    /* Canvas Preview */
     .preview-box { display: flex; flex-direction: column; align-items: center; }
     canvas { width: 270px; height: 480px; border-radius: 18px; box-shadow: 0 15px 40px rgba(0,0,0,0.9); border: 2px solid #f59e0b; }
   </style>
@@ -118,12 +109,11 @@
 
       <!-- DIRECT YOUTUBE SONG SEARCH & ENACTOR -->
       <div>
-        <label>Selected YouTube Song (Will Appear on Poster / Video)</label>
+        <label>Selected YouTube Song (Shown on Poster / Video)</label>
         <div class="yt-search-box">
           <input type="text" id="customSongInput" placeholder="Type or paste song from YouTube (e.g. Yahweh Neeve Na...)" oninput="handleCustomSongChange()">
           <button class="btn-yt-go" onclick="triggerYouTubeSearch()">▶ Search YT</button>
         </div>
-        <span style="font-size: 10px; color:#94a3b8;">Whatever you type here immediately overrides the poster title and metadata.</span>
       </div>
 
       <!-- Toggle Auto-Suggestions -->
@@ -161,7 +151,7 @@
         <select id="entrySelect" onchange="loadSelectedEntry()"></select>
       </div>
 
-      <!-- Connected Song Suggestion Card (Can be hidden via toggle) -->
+      <!-- Connected Song Suggestion Card -->
       <div class="info-card" id="suggestionCard">
         <div class="info-title">💡 Auto-Suggested Reference Song:</div>
         <div id="suggestedSongTitle" style="font-weight: 700; color: #facc15;">—</div>
@@ -227,7 +217,7 @@
     let activeStyleKey = "gold";
     let selectedDuration = 15;
     let suggestionsEnabled = true;
-    let activeSongTitle = "నీ కృపయే నా ఆశ్రయం (Nee Krupaye Naa Aasrayam)";
+    let customSongOverride = "";
 
     function setVisualTheme(key) {
       activeStyleKey = key;
@@ -255,22 +245,18 @@
         btn.classList.remove("active");
         btn.innerText = "DISABLED (OFF)";
       }
+      updateCards();
     }
 
     function triggerYouTubeSearch() {
       const input = document.getElementById("customSongInput").value.trim();
-      const q = encodeURIComponent((input || activeSongTitle.split('(')[0]) + " telugu christian song");
+      const currentSuggested = filteredList[currentIndex] ? filteredList[currentIndex].songName.split('(')[0] : "";
+      const q = encodeURIComponent((input || currentSuggested) + " telugu christian song");
       window.open(`https://www.youtube.com/results?search_query=${q}`, '_blank');
     }
 
     function handleCustomSongChange() {
-      const customVal = document.getElementById("customSongInput").value.trim();
-      if (customVal.length > 0) {
-        activeSongTitle = customVal;
-      } else {
-        const item = filteredList[currentIndex];
-        activeSongTitle = item ? item.songName : "ఆరాధన గీతం";
-      }
+      customSongOverride = document.getElementById("customSongInput").value.trim();
       updateCards();
     }
 
@@ -278,9 +264,20 @@
       const item = filteredList[currentIndex];
       if (item) {
         document.getElementById("customSongInput").value = item.songName;
-        activeSongTitle = item.songName;
+        customSongOverride = item.songName;
         updateCards();
       }
+    }
+
+    // Resolves what song should actually be shown (or none if disabled & no custom song)
+    function getDisplaySong() {
+      if (customSongOverride.length > 0) {
+        return customSongOverride;
+      }
+      if (suggestionsEnabled && filteredList[currentIndex]) {
+        return filteredList[currentIndex].songName;
+      }
+      return "";
     }
 
     const bibleThemes = [
@@ -457,21 +454,11 @@
         select.appendChild(opt);
       });
       select.value = currentIndex;
-
-      // Sync active song if custom box is empty
-      const customVal = document.getElementById("customSongInput").value.trim();
-      if (!customVal && filteredList[currentIndex]) {
-        activeSongTitle = filteredList[currentIndex].songName;
-      }
       updateCards();
     }
 
     function loadSelectedEntry() {
       currentIndex = parseInt(document.getElementById("entrySelect").value);
-      const customVal = document.getElementById("customSongInput").value.trim();
-      if (!customVal && filteredList[currentIndex]) {
-        activeSongTitle = filteredList[currentIndex].songName;
-      }
       updateCards();
     }
 
@@ -484,10 +471,6 @@
 
       currentIndex = nextIdx;
       document.getElementById("entrySelect").value = currentIndex;
-      const customVal = document.getElementById("customSongInput").value.trim();
-      if (!customVal && filteredList[currentIndex]) {
-        activeSongTitle = filteredList[currentIndex].songName;
-      }
       updateCards();
     }
 
@@ -498,11 +481,14 @@
       document.getElementById("suggestedSongTitle").innerText = item.songName;
       document.getElementById("suggestedSongDesc").innerText = item.songThemes;
 
+      const songToDisplay = getDisplaySong();
+      const songPart = songToDisplay ? ` | Song: ${songToDisplay}` : "";
+
       document.getElementById("ytMeta").innerText = 
-        `${item.verseTitle} 🙏 | ${item.reference} | Song: ${activeSongTitle} #Shorts #TeluguChristian #MotivatingChristian`;
+        `${item.verseTitle} 🙏 | ${item.reference}${songPart} #Shorts #TeluguChristian #MotivatingChristian`;
     }
 
-    // MAIN ANIMATION LOOP
+    // CONTINUOUS ANIMATION LOOP
     function startAnimationLoop() {
       const canvas = document.getElementById("shortsCanvas");
       const ctx = canvas.getContext("2d");
@@ -514,6 +500,7 @@
         if (item) {
           const pulse = Math.sin(time / 650);
           const rotAngle = (time / 8000) % (Math.PI * 2);
+          const songText = getDisplaySong();
 
           // 1. Theme Background
           const bgGrad = ctx.createLinearGradient(0, 0, 0, 1920);
@@ -524,7 +511,7 @@
           ctx.fillStyle = bgGrad;
           ctx.fillRect(0, 0, 1080, 1920);
 
-          // 2. Rotating God-Rays
+          // 2. Rotating Volumetric God-Rays
           ctx.save();
           ctx.translate(540, 290);
           ctx.rotate(rotAngle);
@@ -603,7 +590,7 @@
             ctx.stroke();
           }
 
-          // 7. Header Title Bar
+          // 7. Title Bar
           ctx.fillStyle = style.accentColor;
           ctx.font = "bold 46px -apple-system, sans-serif";
           ctx.textAlign = "center";
@@ -614,58 +601,60 @@
           ctx.fillText("✝", 540, 554);
           ctx.fillRect(590, 545, 170, 3);
 
-          // 8. Main Scripture
+          // 8. Main Scripture (Vertically balanced if song banner is disabled)
           ctx.fillStyle = "#ffffff";
-          ctx.font = "bold 46px -apple-system, sans-serif";
+          ctx.font = "bold 48px -apple-system, sans-serif";
           ctx.shadowColor = "rgba(0, 0, 0, 0.95)";
           ctx.shadowBlur = 18;
 
-          let startY = 780;
+          // If no song is shown, center the text slightly lower for cleaner composition
+          let startY = songText ? 780 : 840;
           item.verseLines.forEach(line => {
             ctx.fillText(line, 540, startY);
-            startY += 90;
+            startY += 94;
           });
 
           ctx.fillStyle = "#facc15";
-          ctx.font = "italic bold 40px -apple-system, sans-serif";
-          ctx.fillText(item.reference, 540, startY + 30);
+          ctx.font = "italic bold 42px -apple-system, sans-serif";
+          ctx.fillText(item.reference, 540, startY + 32);
           ctx.shadowBlur = 0;
 
-          // 9. AUDIO-MODULATED VISUALIZER
-          ctx.fillStyle = style.borderOuter;
-          ctx.fillRect(200, 1240, 680, 2);
+          // 9. CONDITIONAL SONG BANNER & VISUALIZER (Only drawn if a song is active)
+          if (songText) {
+            ctx.fillStyle = style.borderOuter;
+            ctx.fillRect(200, 1240, 680, 2);
 
-          const barCount = 24;
-          const barWidth = 6;
-          const startBarX = 540 - ((barCount * 14) / 2);
+            const barCount = 24;
+            const barWidth = 6;
+            const startBarX = 540 - ((barCount * 14) / 2);
 
-          if (hasCustomAudio && analyserNode && audioDataArray) {
-            analyserNode.getByteFrequencyData(audioDataArray);
-          }
-
-          for (let i = 0; i < barCount; i++) {
-            let barH = 8;
-            if (hasCustomAudio && audioDataArray) {
-              const freqVal = audioDataArray[i % audioDataArray.length] || 0;
-              barH = 6 + (freqVal / 255) * 60;
-            } else {
-              barH = 10 + Math.abs(Math.sin((time / 300) + (i * 0.4))) * 28;
+            if (hasCustomAudio && analyserNode && audioDataArray) {
+              analyserNode.getByteFrequencyData(audioDataArray);
             }
+
+            for (let i = 0; i < barCount; i++) {
+              let barH = 8;
+              if (hasCustomAudio && audioDataArray) {
+                const freqVal = audioDataArray[i % audioDataArray.length] || 0;
+                barH = 6 + (freqVal / 255) * 60;
+              } else {
+                barH = 10 + Math.abs(Math.sin((time / 300) + (i * 0.4))) * 28;
+              }
+              ctx.fillStyle = style.subColor;
+              ctx.fillRect(startBarX + i * 14, 1285 - barH / 2, barWidth, barH);
+            }
+
+            ctx.fillStyle = "#94a3b8";
+            ctx.font = "bold 26px -apple-system, sans-serif";
+            ctx.fillText("🎵 ధ్యాన గీతం (Worship Song)", 540, 1335);
+
             ctx.fillStyle = style.subColor;
-            ctx.fillRect(startBarX + i * 14, 1285 - barH / 2, barWidth, barH);
+            ctx.font = "bold 40px -apple-system, sans-serif";
+            ctx.fillText(songText, 540, 1395);
+
+            ctx.fillStyle = style.borderOuter;
+            ctx.fillRect(200, 1440, 680, 2);
           }
-
-          ctx.fillStyle = "#94a3b8";
-          ctx.font = "bold 26px -apple-system, sans-serif";
-          ctx.fillText("🎵 ధ్యాన గీతం (Worship Song)", 540, 1335);
-
-          // RENDER THE ACTIVE YOUTUBE-ENACTED SONG
-          ctx.fillStyle = style.subColor;
-          ctx.font = "bold 40px -apple-system, sans-serif";
-          ctx.fillText(activeSongTitle, 540, 1395);
-
-          ctx.fillStyle = style.borderOuter;
-          ctx.fillRect(200, 1440, 680, 2);
 
           // 10. QR Code & Branding
           const qrX = 770, qrY = 1530, qrSize = 210;
@@ -701,7 +690,7 @@
       requestAnimationFrame(drawFrame);
     }
 
-    // MULTI-DURATION RECORDING ENGINE
+    // RECORDING ENGINE
     let isRecording = false;
 
     function recordVideo() {
