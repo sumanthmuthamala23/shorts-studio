@@ -2,8 +2,9 @@
 <html lang="te">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Motivating Christian - Advanced Shorts Studio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#060911">
+  <title>Motivating Christian • Ultimate Shorts Studio</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: #060911; color: #f8fafc; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 14px; }
@@ -12,17 +13,22 @@
     h1 { color: #f59e0b; font-size: 20px; letter-spacing: 0.5px; margin-bottom: 3px; }
     p.sub { color: #94a3b8; font-size: 12px; }
 
-    .container { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; max-width: 1060px; width: 100%; }
+    .container { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; max-width: 1080px; width: 100%; }
 
     /* Control Panel */
     .controls { background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; padding: 16px; flex: 1; min-width: 340px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
     label { font-size: 11px; color: #f59e0b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
     select, input { width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid #334155; background: #0a0f1d; color: #fff; font-size: 12px; outline: none; }
     
-    /* 6 Visual Theme Buttons (2 rows of 3) */
+    /* 6 Visual Themes Grid */
     .style-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
     .style-btn { padding: 7px 4px; font-size: 11px; border: 1px solid #334155; border-radius: 6px; background: #0a0f1d; color: #cbd5e1; cursor: pointer; font-weight: 600; text-align: center; }
     .style-btn.active { border-color: #f59e0b; background: #1e293b; color: #f59e0b; font-weight: 700; }
+
+    /* Duration Selector */
+    .duration-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+    .duration-btn { padding: 6px; font-size: 11px; border: 1px solid #334155; border-radius: 6px; background: #0a0f1d; color: #94a3b8; cursor: pointer; font-weight: 600; text-align: center; }
+    .duration-btn.active { background: #d97706; color: #fff; border-color: #f59e0b; font-weight: 700; }
 
     /* Audio Trimmer & Trim Slider */
     .audio-panel {
@@ -39,14 +45,13 @@
     .trimmer-row input[type="range"] { flex: 1; accent-color: #f59e0b; }
     .btn-trim-preview { padding: 4px 8px; font-size: 11px; background: #334155; border: none; border-radius: 4px; color: #fff; cursor: pointer; font-weight: 600; }
 
-    /* Separate Search Fields */
+    /* Search & Badges */
     .search-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-
     .theme-badge-list { display: flex; flex-wrap: wrap; gap: 5px; max-height: 75px; overflow-y: auto; padding: 2px 0; }
     .badge { font-size: 10px; padding: 4px 8px; border-radius: 6px; background: #0a0f1d; border: 1px solid #334155; color: #94a3b8; cursor: pointer; transition: 0.2s; white-space: nowrap; }
     .badge:hover, .badge.active { background: #f59e0b; color: #000; font-weight: 700; border-color: #f59e0b; }
 
-    /* Action Buttons */
+    /* Buttons */
     .btn-row { display: grid; grid-template-columns: 1fr 1fr 1.3fr; gap: 6px; margin-top: 4px; }
     button.action-btn { padding: 11px 6px; border: none; border-radius: 8px; font-weight: 700; font-size: 11px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px; }
     .btn-primary { background: #d97706; color: #fff; }
@@ -60,12 +65,15 @@
     .btn-yt { background: #dc2626; color: #fff; padding: 6px 10px; border-radius: 6px; border: none; font-size: 11px; font-weight: 600; cursor: pointer; margin-top: 4px; display: inline-flex; align-items: center; gap: 4px; }
     .btn-yt:hover { background: #b91c1c; }
 
+    .btn-copy { background: #334155; color: #38bdf8; padding: 6px 10px; border-radius: 6px; border: none; font-size: 11px; font-weight: 600; cursor: pointer; margin-top: 4px; display: inline-flex; align-items: center; gap: 4px; }
+    .btn-copy:hover { background: #475569; }
+
     @keyframes pulseRec { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
     .info-card { background: #0a0f1d; border: 1px solid #1e293b; border-radius: 8px; padding: 10px; font-size: 12px; line-height: 1.5; }
     .info-title { color: #f59e0b; font-weight: bold; margin-bottom: 2px; }
 
-    /* 9:16 Canvas Preview */
+    /* Canvas */
     .preview-box { display: flex; flex-direction: column; align-items: center; }
     canvas { width: 270px; height: 480px; border-radius: 18px; box-shadow: 0 15px 40px rgba(0,0,0,0.9); border: 2px solid #f59e0b; }
   </style>
@@ -74,13 +82,13 @@
 
   <header>
     <h1>MOTIVATING CHRISTIAN • SHORTS STUDIO</h1>
-    <p class="sub">10s Audio Timephrase Trimmer • 6 Atmospheric Visual Themes • YouTube Song Enactor</p>
+    <p class="sub">Dynamic Video Engine • 15s/30s/60s Controls • Instant Metadata Sync</p>
   </header>
 
   <div class="container">
     <div class="controls">
       
-      <!-- 6 Visual Themes -->
+      <!-- Visual Themes -->
       <div>
         <label>Visual Atmosphere Theme</label>
         <div class="style-grid">
@@ -93,17 +101,27 @@
         </div>
       </div>
 
-      <!-- Universal Audio Engine & 10s Timephrase Trimmer -->
+      <!-- Video Duration Selector -->
       <div>
-        <label>Audio Track (MP3, WAV, M4A, AAC, OGG)</label>
+        <label>Shorts Recording Duration</label>
+        <div class="duration-grid">
+          <button id="dur_15" class="duration-btn active" onclick="setDuration(15)">⚡ 15 Seconds</button>
+          <button id="dur_30" class="duration-btn" onclick="setDuration(30)">⏳ 30 Seconds</button>
+          <button id="dur_60" class="duration-btn" onclick="setDuration(60)">🎬 60 Seconds</button>
+        </div>
+      </div>
+
+      <!-- Universal Audio Engine & Timephrase Trimmer -->
+      <div>
+        <label>Audio Track (Any Extension Supported)</label>
         <div class="audio-panel">
           <input type="file" id="audioFileInput" accept="audio/*" onchange="handleAudioUpload(event)">
           <div class="trimmer-row">
             <span>Trim Start: <b id="startTimeDisplay" style="color:#f59e0b;">0:00</b></span>
             <input type="range" id="audioScrubber" min="0" max="100" value="0" oninput="updateScrubberTime(this.value)">
-            <button class="btn-trim-preview" onclick="previewHypedTimephrase()">▶ Test 10s</button>
+            <button class="btn-trim-preview" onclick="previewHypedTimephrase()">▶ Test Clip</button>
           </div>
-          <span style="font-size: 10px; color:#94a3b8;">Slide to your favorite hyped chorus; recording automatically captures 10 seconds from that exact mark.</span>
+          <span style="font-size: 10px; color:#94a3b8;">Slide to your favorite chorus; recording automatically captures from that exact timestamp.</span>
         </div>
       </div>
 
@@ -119,36 +137,37 @@
         </div>
       </div>
 
-      <!-- Scripture Theme Badges -->
+      <!-- Situational Badges -->
       <div>
         <label>Situational Theme</label>
         <div class="theme-badge-list" id="badgeContainer"></div>
       </div>
 
-      <!-- Dropdown -->
+      <!-- Selection Dropdown -->
       <div>
-        <label>Select Matched Verse</label>
+        <label>Select Scripture</label>
         <select id="entrySelect" onchange="loadSelectedEntry()"></select>
       </div>
 
-      <!-- Song & Direct YouTube Trigger -->
+      <!-- Song & Metadata Info -->
       <div class="info-card">
         <div class="info-title">🎵 Connected Worship Song:</div>
         <div id="songTitle" style="font-weight: 700; color: #facc15;">—</div>
         <div id="songDesc" style="color: #94a3b8; font-size: 11px;">—</div>
-        <button class="btn-yt" onclick="openSongOnYouTube()">▶️ Search & Play on YouTube</button>
+        <button class="btn-yt" onclick="openSongOnYouTube()">▶️ Open & Play on YouTube</button>
       </div>
 
       <div class="info-card">
         <div class="info-title">📋 YouTube Metadata:</div>
         <div id="ytMeta" style="font-size: 11px; color: #cbd5e1; word-break: break-word;">—</div>
+        <button class="btn-copy" id="copyBtn" onclick="copyFullMetadata()">📋 Copy Caption & Tags</button>
       </div>
 
       <!-- Action Buttons -->
       <div class="btn-row">
         <button class="action-btn btn-primary" onclick="randomizeInTheme()">🔀 Shuffle</button>
         <button class="action-btn btn-download" onclick="downloadShortFrame()">🖼️ PNG</button>
-        <button id="recordBtn" class="action-btn btn-video" onclick="recordVideo()">🎬 Record 10s</button>
+        <button id="recordBtn" class="action-btn btn-video" onclick="recordVideo()">🎬 Record Video</button>
       </div>
     </div>
 
@@ -159,7 +178,6 @@
   </div>
 
   <script>
-    // 6 DISTINCT VISUAL PALETTES
     const visualStyles = {
       gold: {
         bgTop: "#040711", bgMid: "#0c1527", bgBottom: "#020307",
@@ -194,6 +212,7 @@
     };
 
     let activeStyleKey = "gold";
+    let selectedDuration = 15; // 15, 30, or 60
 
     function setVisualTheme(key) {
       activeStyleKey = key;
@@ -201,7 +220,13 @@
       document.getElementById("theme_" + key).classList.add("active");
     }
 
-    // THEMATIC SCRIPTURES
+    function setDuration(seconds) {
+      selectedDuration = seconds;
+      document.querySelectorAll(".duration-btn").forEach(btn => btn.classList.remove("active"));
+      document.getElementById("dur_" + seconds).classList.add("active");
+      document.getElementById("recordBtn").innerText = `🎬 Record ${selectedDuration}s`;
+    }
+
     const bibleThemes = [
       { id: "ALL", name: "అన్ని వాక్యాలు (All Themes)" },
       { id: "FEAR", name: "భయము & ఆందోళన (Fear & Anxiety)" },
@@ -238,7 +263,7 @@
     const qrImg = new Image();
     qrImg.src = "qr.png";
 
-    // PARTICLES ENGINE
+    // 28 Floating Divine Light Particles
     const particles = [];
     for (let i = 0; i < 28; i++) {
       particles.push({
@@ -277,7 +302,7 @@
 
       audioElement.onloadedmetadata = function() {
         const scrubber = document.getElementById("audioScrubber");
-        scrubber.max = Math.max(0, Math.floor(audioElement.duration - 10));
+        scrubber.max = Math.max(0, Math.floor(audioElement.duration - selectedDuration));
         scrubber.value = 0;
         updateScrubberTime(0);
       };
@@ -310,10 +335,9 @@
       audioElement.play();
       setTimeout(() => {
         audioElement.pause();
-      }, 10000);
+      }, selectedDuration * 1000);
     }
 
-    // YOUTUBE ENACTOR (Instant Launcher)
     function openSongOnYouTube() {
       const item = filteredList[currentIndex];
       if (!item) return;
@@ -322,7 +346,19 @@
       window.open(`https://www.youtube.com/results?search_query=${query}`, '_blank');
     }
 
-    // SEPARATE SEARCH CONTROLS
+    function copyFullMetadata() {
+      const text = document.getElementById("ytMeta").innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById("copyBtn");
+        btn.innerText = "✅ Copied to Clipboard!";
+        btn.style.color = "#10b981";
+        setTimeout(() => {
+          btn.innerText = "📋 Copy Caption & Tags";
+          btn.style.color = "#38bdf8";
+        }, 2500);
+      });
+    }
+
     function handleFilteredSearch() {
       const vQuery = document.getElementById("searchVerseInput").value.toLowerCase().trim();
       const sQuery = document.getElementById("searchSongInput").value.toLowerCase().trim();
@@ -409,7 +445,7 @@
         `${item.verseTitle} 🙏 | ${item.reference} | Song: ${item.songName} #Shorts #TeluguChristian #MotivatingChristian`;
     }
 
-    // ANIMATION ENGINE
+    // CONTINUOUS ANIMATION LOOP
     function startAnimationLoop() {
       const canvas = document.getElementById("shortsCanvas");
       const ctx = canvas.getContext("2d");
@@ -431,7 +467,7 @@
           ctx.fillStyle = bgGrad;
           ctx.fillRect(0, 0, 1080, 1920);
 
-          // 2. Rotating God-Rays
+          // 2. Rotating Volumetric God-Rays
           ctx.save();
           ctx.translate(540, 290);
           ctx.rotate(rotAngle);
@@ -467,7 +503,7 @@
           ctx.fillStyle = sunGlow;
           ctx.fillRect(0, 0, 1080, 1920);
 
-          // 5. Border Frames
+          // 5. Borders
           ctx.strokeStyle = style.borderOuter;
           ctx.lineWidth = 3;
           ctx.strokeRect(36, 36, 1008, 1848);
@@ -510,7 +546,7 @@
             ctx.stroke();
           }
 
-          // 7. Header Title Bar
+          // 7. Title Bar
           ctx.fillStyle = style.accentColor;
           ctx.font = "bold 46px -apple-system, sans-serif";
           ctx.textAlign = "center";
@@ -538,7 +574,7 @@
           ctx.fillText(item.reference, 540, startY + 30);
           ctx.shadowBlur = 0;
 
-          // 9. AUDIO-MODULATED VISUALIZER
+          // 9. AUDIO-REACTIVE VISUALIZER
           ctx.fillStyle = style.borderOuter;
           ctx.fillRect(200, 1240, 680, 2);
 
@@ -607,7 +643,7 @@
       requestAnimationFrame(drawFrame);
     }
 
-    // 10s TIMEPHRASE RECORDING ENGINE
+    // MULTI-DURATION RECORDING ENGINE
     let isRecording = false;
 
     function recordVideo() {
@@ -615,14 +651,12 @@
       const canvas = document.getElementById("shortsCanvas");
       const recordBtn = document.getElementById("recordBtn");
 
-      // 1. Start audio at the exact trimmed timephrase
       if (hasCustomAudio && audioElement) {
         if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
         audioElement.currentTime = audioTrimStart;
         audioElement.play();
       }
 
-      // 2. Capture combined stream
       const canvasStream = canvas.captureStream(30);
       let combinedStream = new MediaStream();
       canvasStream.getVideoTracks().forEach(track => combinedStream.addTrack(track));
@@ -653,19 +687,19 @@
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         const cleanRef = filteredList[currentIndex].reference.replace(/[^a-zA-Z0-9]/g, "_");
-        a.download = `MotivatingChristian_${cleanRef}.webm`;
+        a.download = `MotivatingChristian_${cleanRef}_${selectedDuration}s.webm`;
         a.href = url;
         a.click();
         URL.revokeObjectURL(url);
 
         isRecording = false;
         recordBtn.classList.remove("recording");
-        recordBtn.innerText = "🎬 Record 10s";
+        recordBtn.innerText = `🎬 Record ${selectedDuration}s`;
       };
 
       isRecording = true;
       recordBtn.classList.add("recording");
-      let secondsLeft = 10;
+      let secondsLeft = selectedDuration;
       recordBtn.innerText = `🔴 Rec (${secondsLeft}s)...`;
 
       const countdown = setInterval(() => {
@@ -680,7 +714,7 @@
       recorder.start();
       setTimeout(() => {
         recorder.stop();
-      }, 10000);
+      }, selectedDuration * 1000);
     }
 
     function downloadShortFrame() {
@@ -695,6 +729,7 @@
     window.onload = () => {
       initThemeBadges();
       updateDropdown();
+      setDuration(15);
       startAnimationLoop();
     };
   </script>
