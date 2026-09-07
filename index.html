@@ -3,34 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Motivating Christian - Audio-Reactive Animated Studio</title>
+  <title>Motivating Christian - Advanced Shorts Studio</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: #070a12; color: #f8fafc; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 14px; }
+    body { background: #060911; color: #f8fafc; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 14px; }
     
-    header { text-align: center; margin-bottom: 14px; }
-    h1 { color: #f59e0b; font-size: 20px; letter-spacing: 0.5px; margin-bottom: 4px; }
+    header { text-align: center; margin-bottom: 12px; }
+    h1 { color: #f59e0b; font-size: 20px; letter-spacing: 0.5px; margin-bottom: 3px; }
     p.sub { color: #94a3b8; font-size: 12px; }
 
-    .container { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; max-width: 1040px; width: 100%; }
+    .container { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; max-width: 1060px; width: 100%; }
 
     /* Control Panel */
-    .controls { background: #111827; border: 1px solid #1f2937; border-radius: 14px; padding: 16px; flex: 1; min-width: 330px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+    .controls { background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; padding: 16px; flex: 1; min-width: 340px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
     label { font-size: 11px; color: #f59e0b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-    select, input { width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid #374151; background: #0b0f19; color: #fff; font-size: 12px; outline: none; }
+    select, input { width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid #334155; background: #0a0f1d; color: #fff; font-size: 12px; outline: none; }
     
-    /* Visual Style Theme Buttons */
-    .style-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-    .style-btn { padding: 8px 4px; font-size: 11px; border: 1px solid #374151; border-radius: 6px; background: #0b0f19; color: #cbd5e1; cursor: pointer; font-weight: 600; text-align: center; }
-    .style-btn.active { border-color: #f59e0b; background: #1f2937; color: #f59e0b; }
+    /* 6 Visual Theme Buttons (2 rows of 3) */
+    .style-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .style-btn { padding: 7px 4px; font-size: 11px; border: 1px solid #334155; border-radius: 6px; background: #0a0f1d; color: #cbd5e1; cursor: pointer; font-weight: 600; text-align: center; }
+    .style-btn.active { border-color: #f59e0b; background: #1e293b; color: #f59e0b; font-weight: 700; }
 
-    .theme-badge-list { display: flex; flex-wrap: wrap; gap: 5px; max-height: 80px; overflow-y: auto; padding: 2px 0; }
-    .badge { font-size: 10px; padding: 4px 8px; border-radius: 6px; background: #0b0f19; border: 1px solid #374151; color: #94a3b8; cursor: pointer; transition: 0.2s; white-space: nowrap; }
-    .badge:hover, .badge.active { background: #f59e0b; color: #000; font-weight: 700; border-color: #f59e0b; }
-
-    /* Audio Attachment Box */
-    .audio-upload-box {
-      background: #0b0f19;
+    /* Audio Trimmer & Trim Slider */
+    .audio-panel {
+      background: #0a0f1d;
       border: 1px dashed #f59e0b;
       border-radius: 8px;
       padding: 10px;
@@ -38,11 +34,20 @@
       flex-direction: column;
       gap: 6px;
     }
-    .audio-upload-box input[type="file"] { border: none; padding: 0; background: transparent; font-size: 11px; color: #94a3b8; }
-    .audio-status { font-size: 11px; color: #10b981; font-weight: 600; }
+    .audio-panel input[type="file"] { border: none; padding: 0; background: transparent; font-size: 11px; color: #94a3b8; }
+    .trimmer-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #cbd5e1; }
+    .trimmer-row input[type="range"] { flex: 1; accent-color: #f59e0b; }
+    .btn-trim-preview { padding: 4px 8px; font-size: 11px; background: #334155; border: none; border-radius: 4px; color: #fff; cursor: pointer; font-weight: 600; }
+
+    /* Separate Search Fields */
+    .search-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    .theme-badge-list { display: flex; flex-wrap: wrap; gap: 5px; max-height: 75px; overflow-y: auto; padding: 2px 0; }
+    .badge { font-size: 10px; padding: 4px 8px; border-radius: 6px; background: #0a0f1d; border: 1px solid #334155; color: #94a3b8; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+    .badge:hover, .badge.active { background: #f59e0b; color: #000; font-weight: 700; border-color: #f59e0b; }
 
     /* Action Buttons */
-    .btn-row { display: grid; grid-template-columns: 1fr 1.1fr 1.4fr; gap: 6px; margin-top: 4px; }
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr 1.3fr; gap: 6px; margin-top: 4px; }
     button.action-btn { padding: 11px 6px; border: none; border-radius: 8px; font-weight: 700; font-size: 11px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px; }
     .btn-primary { background: #d97706; color: #fff; }
     .btn-primary:hover { background: #b45309; }
@@ -52,12 +57,15 @@
     .btn-video:hover { background: #7c3aed; }
     .btn-video.recording { background: #ef4444; animation: pulseRec 1s infinite; }
 
+    .btn-yt { background: #dc2626; color: #fff; padding: 6px 10px; border-radius: 6px; border: none; font-size: 11px; font-weight: 600; cursor: pointer; margin-top: 4px; display: inline-flex; align-items: center; gap: 4px; }
+    .btn-yt:hover { background: #b91c1c; }
+
     @keyframes pulseRec { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-    .info-card { background: #0b0f19; border: 1px solid #1f2937; border-radius: 8px; padding: 10px; font-size: 12px; line-height: 1.5; }
+    .info-card { background: #0a0f1d; border: 1px solid #1e293b; border-radius: 8px; padding: 10px; font-size: 12px; line-height: 1.5; }
     .info-title { color: #f59e0b; font-weight: bold; margin-bottom: 2px; }
 
-    /* 9:16 Shorts Canvas Preview */
+    /* 9:16 Canvas Preview */
     .preview-box { display: flex; flex-direction: column; align-items: center; }
     canvas { width: 270px; height: 480px; border-radius: 18px; box-shadow: 0 15px 40px rgba(0,0,0,0.9); border: 2px solid #f59e0b; }
   </style>
@@ -65,54 +73,70 @@
 <body>
 
   <header>
-    <h1>MOTIVATING CHRISTIAN • ADVANCED SHORTS STUDIO</h1>
-    <p class="sub">Audio-Modulated Animated Video & High-Impact Graphics</p>
+    <h1>MOTIVATING CHRISTIAN • SHORTS STUDIO</h1>
+    <p class="sub">10s Audio Timephrase Trimmer • 6 Atmospheric Visual Themes • YouTube Song Enactor</p>
   </header>
 
   <div class="container">
     <div class="controls">
       
-      <!-- Visual Palette -->
+      <!-- 6 Visual Themes -->
       <div>
-        <label>Visual Color Atmosphere</label>
-        <div class="style-row">
+        <label>Visual Atmosphere Theme</label>
+        <div class="style-grid">
           <button id="theme_gold" class="style-btn active" onclick="setVisualTheme('gold')">👑 Royal Gold</button>
           <button id="theme_dawn" class="style-btn" onclick="setVisualTheme('dawn')">🌅 Dawn Sunrise</button>
           <button id="theme_emerald" class="style-btn" onclick="setVisualTheme('emerald')">🌿 Sacred Olive</button>
+          <button id="theme_midnight" class="style-btn" onclick="setVisualTheme('midnight')">🌌 Celestial Midnight</button>
+          <button id="theme_flame" class="style-btn" onclick="setVisualTheme('flame')">🔥 Pentecost Flame</button>
+          <button id="theme_zion" class="style-btn" onclick="setVisualTheme('zion')">🕊️ Mount Zion</button>
         </div>
       </div>
 
-      <!-- Audio Attachment Engine -->
+      <!-- Universal Audio Engine & 10s Timephrase Trimmer -->
       <div>
-        <label>Attach Audio Track (Optional)</label>
-        <div class="audio-upload-box">
+        <label>Audio Track (MP3, WAV, M4A, AAC, OGG)</label>
+        <div class="audio-panel">
           <input type="file" id="audioFileInput" accept="audio/*" onchange="handleAudioUpload(event)">
-          <div id="audioStatus" class="audio-status">No audio attached (Visualizer runs in ambient mode)</div>
+          <div class="trimmer-row">
+            <span>Trim Start: <b id="startTimeDisplay" style="color:#f59e0b;">0:00</b></span>
+            <input type="range" id="audioScrubber" min="0" max="100" value="0" oninput="updateScrubberTime(this.value)">
+            <button class="btn-trim-preview" onclick="previewHypedTimephrase()">▶ Test 10s</button>
+          </div>
+          <span style="font-size: 10px; color:#94a3b8;">Slide to your favorite hyped chorus; recording automatically captures 10 seconds from that exact mark.</span>
         </div>
       </div>
 
-      <!-- Scripture Themes -->
+      <!-- Separate Search Fields -->
+      <div class="search-grid">
+        <div>
+          <label>Search Scripture</label>
+          <input type="text" id="searchVerseInput" placeholder="e.g. కాపరి, బలము..." oninput="handleFilteredSearch()">
+        </div>
+        <div>
+          <label>Search Song Name</label>
+          <input type="text" id="searchSongInput" placeholder="e.g. Krupaye, Yehova..." oninput="handleFilteredSearch()">
+        </div>
+      </div>
+
+      <!-- Scripture Theme Badges -->
       <div>
-        <label>Biblical Situation / Theme</label>
+        <label>Situational Theme</label>
         <div class="theme-badge-list" id="badgeContainer"></div>
       </div>
 
-      <!-- Search Bar -->
+      <!-- Dropdown -->
       <div>
-        <label>Search Scripture or Song</label>
-        <input type="text" id="searchInput" placeholder="e.g. కాపరి, భయం, healing..." oninput="handleSearch()">
-      </div>
-
-      <!-- Select Dropdown -->
-      <div>
-        <label>Current Selection</label>
+        <label>Select Matched Verse</label>
         <select id="entrySelect" onchange="loadSelectedEntry()"></select>
       </div>
 
+      <!-- Song & Direct YouTube Trigger -->
       <div class="info-card">
         <div class="info-title">🎵 Connected Worship Song:</div>
         <div id="songTitle" style="font-weight: 700; color: #facc15;">—</div>
         <div id="songDesc" style="color: #94a3b8; font-size: 11px;">—</div>
+        <button class="btn-yt" onclick="openSongOnYouTube()">▶️ Search & Play on YouTube</button>
       </div>
 
       <div class="info-card">
@@ -135,40 +159,37 @@
   </div>
 
   <script>
-    // VISUAL COLOR THEMES
+    // 6 DISTINCT VISUAL PALETTES
     const visualStyles = {
       gold: {
-        bgTop: "#040711",
-        bgMid: "#0c1527",
-        bgBottom: "#020307",
-        glowColor: "rgba(245, 158, 11, ",
-        accentColor: "#f59e0b",
-        subColor: "#38bdf8",
-        particleColor: "rgba(250, 204, 21, ",
-        borderOuter: "rgba(245, 158, 11, 0.4)",
-        borderInner: "rgba(245, 158, 11, 0.85)"
+        bgTop: "#040711", bgMid: "#0c1527", bgBottom: "#020307",
+        glowColor: "rgba(245, 158, 11, ", accentColor: "#f59e0b", subColor: "#38bdf8",
+        particleColor: "rgba(250, 204, 21, ", borderOuter: "rgba(245, 158, 11, 0.4)", borderInner: "rgba(245, 158, 11, 0.85)"
       },
       dawn: {
-        bgTop: "#280738",
-        bgMid: "#581230",
-        bgBottom: "#110217",
-        glowColor: "rgba(251, 146, 60, ",
-        accentColor: "#fb923c",
-        subColor: "#f472b6",
-        particleColor: "rgba(251, 146, 60, ",
-        borderOuter: "rgba(251, 146, 60, 0.4)",
-        borderInner: "rgba(251, 146, 60, 0.85)"
+        bgTop: "#280738", bgMid: "#581230", bgBottom: "#110217",
+        glowColor: "rgba(251, 146, 60, ", accentColor: "#fb923c", subColor: "#f472b6",
+        particleColor: "rgba(251, 146, 60, ", borderOuter: "rgba(251, 146, 60, 0.4)", borderInner: "rgba(251, 146, 60, 0.85)"
       },
       emerald: {
-        bgTop: "#012019",
-        bgMid: "#043c2e",
-        bgBottom: "#01120e",
-        glowColor: "rgba(52, 211, 153, ",
-        accentColor: "#34d399",
-        subColor: "#6ee7b7",
-        particleColor: "rgba(52, 211, 153, ",
-        borderOuter: "rgba(52, 211, 153, 0.4)",
-        borderInner: "rgba(52, 211, 153, 0.85)"
+        bgTop: "#012019", bgMid: "#043c2e", bgBottom: "#01120e",
+        glowColor: "rgba(52, 211, 153, ", accentColor: "#34d399", subColor: "#6ee7b7",
+        particleColor: "rgba(52, 211, 153, ", borderOuter: "rgba(52, 211, 153, 0.4)", borderInner: "rgba(52, 211, 153, 0.85)"
+      },
+      midnight: {
+        bgTop: "#05051f", bgMid: "#121442", bgBottom: "#02020a",
+        glowColor: "rgba(99, 102, 241, ", accentColor: "#818cf8", subColor: "#38bdf8",
+        particleColor: "rgba(129, 140, 248, ", borderOuter: "rgba(99, 102, 241, 0.4)", borderInner: "rgba(129, 140, 248, 0.85)"
+      },
+      flame: {
+        bgTop: "#210404", bgMid: "#4c0505", bgBottom: "#0d0101",
+        glowColor: "rgba(239, 68, 68, ", accentColor: "#f87171", subColor: "#fbbf24",
+        particleColor: "rgba(248, 113, 113, ", borderOuter: "rgba(239, 68, 68, 0.4)", borderInner: "rgba(248, 113, 113, 0.85)"
+      },
+      zion: {
+        bgTop: "#082f49", bgMid: "#075985", bgBottom: "#021a2c",
+        glowColor: "rgba(56, 189, 248, ", accentColor: "#38bdf8", subColor: "#facc15",
+        particleColor: "rgba(250, 204, 21, ", borderOuter: "rgba(56, 189, 248, 0.4)", borderInner: "rgba(56, 189, 248, 0.85)"
       }
     };
 
@@ -180,7 +201,7 @@
       document.getElementById("theme_" + key).classList.add("active");
     }
 
-    // THEMATIC SCRIPTURES ARCHIVE
+    // THEMATIC SCRIPTURES
     const bibleThemes = [
       { id: "ALL", name: "అన్ని వాక్యాలు (All Themes)" },
       { id: "FEAR", name: "భయము & ఆందోళన (Fear & Anxiety)" },
@@ -217,25 +238,26 @@
     const qrImg = new Image();
     qrImg.src = "qr.png";
 
-    // PARTICLES ENGINE (25 Floating Divine Lights)
+    // PARTICLES ENGINE
     const particles = [];
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < 28; i++) {
       particles.push({
         x: Math.random() * 1080,
         y: Math.random() * 1920,
         radius: Math.random() * 4 + 2,
-        speedY: Math.random() * 1.5 + 0.5,
+        speedY: Math.random() * 1.6 + 0.5,
         alpha: Math.random() * 0.7 + 0.3
       });
     }
 
-    // AUDIO REACTIVE ENGINE (Web Audio API)
+    // AUDIO TIMEPHRASE ENGINE
     let audioCtx = null;
     let analyserNode = null;
     let audioSourceNode = null;
     let audioElement = null;
     let audioDataArray = null;
     let hasCustomAudio = false;
+    let audioTrimStart = 0;
 
     function handleAudioUpload(event) {
       const file = event.target.files[0];
@@ -252,20 +274,75 @@
 
       audioElement = document.createElement("audio");
       audioElement.src = URL.createObjectURL(file);
-      audioElement.loop = true;
+
+      audioElement.onloadedmetadata = function() {
+        const scrubber = document.getElementById("audioScrubber");
+        scrubber.max = Math.max(0, Math.floor(audioElement.duration - 10));
+        scrubber.value = 0;
+        updateScrubberTime(0);
+      };
 
       analyserNode = audioCtx.createAnalyser();
       analyserNode.fftSize = 64;
-      const bufferLength = analyserNode.frequencyBinCount;
-      audioDataArray = new Uint8Array(bufferLength);
+      audioDataArray = new Uint8Array(analyserNode.frequencyBinCount);
 
       audioSourceNode = audioCtx.createMediaElementSource(audioElement);
       audioSourceNode.connect(analyserNode);
       analyserNode.connect(audioCtx.destination);
 
       hasCustomAudio = true;
-      document.getElementById("audioStatus").innerText = "🎵 " + file.name.substring(0, 28) + "... (Loaded & Ready)";
+    }
+
+    function updateScrubberTime(val) {
+      audioTrimStart = parseFloat(val);
+      const mins = Math.floor(audioTrimStart / 60);
+      const secs = Math.floor(audioTrimStart % 60);
+      document.getElementById("startTimeDisplay").innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    function previewHypedTimephrase() {
+      if (!audioElement) {
+        alert("Please attach an audio track first.");
+        return;
+      }
+      if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+      audioElement.currentTime = audioTrimStart;
       audioElement.play();
+      setTimeout(() => {
+        audioElement.pause();
+      }, 10000);
+    }
+
+    // YOUTUBE ENACTOR (Instant Launcher)
+    function openSongOnYouTube() {
+      const item = filteredList[currentIndex];
+      if (!item) return;
+      const cleanSong = item.songName.split('(')[0].trim();
+      const query = encodeURIComponent(cleanSong + " telugu christian song");
+      window.open(`https://www.youtube.com/results?search_query=${query}`, '_blank');
+    }
+
+    // SEPARATE SEARCH CONTROLS
+    function handleFilteredSearch() {
+      const vQuery = document.getElementById("searchVerseInput").value.toLowerCase().trim();
+      const sQuery = document.getElementById("searchSongInput").value.toLowerCase().trim();
+
+      filteredList = scriptureDatabase.filter(item => {
+        const matchesVerse = !vQuery || 
+          item.verseTitle.toLowerCase().includes(vQuery) ||
+          item.verseLines.join(" ").toLowerCase().includes(vQuery) ||
+          item.reference.toLowerCase().includes(vQuery);
+
+        const matchesSong = !sQuery || 
+          item.songName.toLowerCase().includes(sQuery);
+
+        const matchesTheme = (currentTheme === "ALL" || item.theme === currentTheme);
+
+        return matchesVerse && matchesSong && matchesTheme;
+      });
+
+      currentIndex = 0;
+      updateDropdown();
     }
 
     function initThemeBadges() {
@@ -282,37 +359,20 @@
 
     function selectTheme(themeId) {
       currentTheme = themeId;
-      document.getElementById("searchInput").value = "";
       initThemeBadges();
-
-      if (themeId === "ALL") {
-        filteredList = [...scriptureDatabase];
-      } else {
-        filteredList = scriptureDatabase.filter(item => item.theme === themeId);
-      }
-      currentIndex = 0;
-      updateDropdown();
-    }
-
-    function handleSearch() {
-      const q = document.getElementById("searchInput").value.toLowerCase().trim();
-      if (!q) {
-        selectTheme(currentTheme);
-        return;
-      }
-      filteredList = scriptureDatabase.filter(item => {
-        return item.verseTitle.toLowerCase().includes(q) ||
-               item.verseLines.join(" ").toLowerCase().includes(q) ||
-               item.reference.toLowerCase().includes(q) ||
-               item.songName.toLowerCase().includes(q);
-      });
-      currentIndex = 0;
-      updateDropdown();
+      handleFilteredSearch();
     }
 
     function updateDropdown() {
       const select = document.getElementById("entrySelect");
       select.innerHTML = "";
+      if (filteredList.length === 0) {
+        const opt = document.createElement("option");
+        opt.innerText = "No matching scriptures";
+        select.appendChild(opt);
+        return;
+      }
+
       filteredList.forEach((item, idx) => {
         const opt = document.createElement("option");
         opt.value = idx;
@@ -349,7 +409,7 @@
         `${item.verseTitle} 🙏 | ${item.reference} | Song: ${item.songName} #Shorts #TeluguChristian #MotivatingChristian`;
     }
 
-    // MAIN HIGH-GRAPHICS ANIMATION LOOP
+    // ANIMATION ENGINE
     function startAnimationLoop() {
       const canvas = document.getElementById("shortsCanvas");
       const ctx = canvas.getContext("2d");
@@ -360,9 +420,9 @@
 
         if (item) {
           const pulse = Math.sin(time / 650);
-          const rotAngle = (time / 8000) % (Math.PI * 2); // Slowly rotating rays
+          const rotAngle = (time / 8000) % (Math.PI * 2);
 
-          // 1. Deep Atmospheric Gradient
+          // 1. Theme Gradient
           const bgGrad = ctx.createLinearGradient(0, 0, 0, 1920);
           bgGrad.addColorStop(0, style.bgTop);
           bgGrad.addColorStop(0.35, style.bgMid);
@@ -371,7 +431,7 @@
           ctx.fillStyle = bgGrad;
           ctx.fillRect(0, 0, 1080, 1920);
 
-          // 2. Rotating Volumetric God-Rays (Divine Sunbeam Wheel)
+          // 2. Rotating God-Rays
           ctx.save();
           ctx.translate(540, 290);
           ctx.rotate(rotAngle);
@@ -385,7 +445,7 @@
           }
           ctx.restore();
 
-          // 3. Floating Divine Light Orbs (Upward Particle Drift)
+          // 3. Floating Light Particles
           particles.forEach(p => {
             p.y -= p.speedY;
             if (p.y < 0) { p.y = 1920; p.x = Math.random() * 1080; }
@@ -398,7 +458,7 @@
             ctx.shadowBlur = 0;
           });
 
-          // 4. Central Sunburst Core Behind Logo
+          // 4. Central Glow
           const sunRadius = 520 + pulse * 40;
           const sunGlow = ctx.createRadialGradient(540, 290, 40, 540, 290, sunRadius);
           sunGlow.addColorStop(0, style.glowColor + "0.38)");
@@ -407,7 +467,7 @@
           ctx.fillStyle = sunGlow;
           ctx.fillRect(0, 0, 1080, 1920);
 
-          // 5. Double Ornate Border Frame
+          // 5. Border Frames
           ctx.strokeStyle = style.borderOuter;
           ctx.lineWidth = 3;
           ctx.strokeRect(36, 36, 1008, 1848);
@@ -425,14 +485,13 @@
           drawCorner(48, 1872);
           drawCorner(1032, 1872);
 
-          // 6. Concentric Pulsing Energy Ring around Logo
+          // 6. Energy Ring & Logo
           ctx.strokeStyle = style.glowColor + (0.3 + pulse * 0.15) + ")";
           ctx.lineWidth = 2;
           ctx.beginPath();
           ctx.arc(540, 290, 155 + pulse * 6, 0, Math.PI * 2);
           ctx.stroke();
 
-          // Logo Rendering
           if (logoImg.complete && logoImg.naturalWidth > 0) {
             ctx.save();
             ctx.shadowColor = style.glowColor + "0.7)";
@@ -462,7 +521,7 @@
           ctx.fillText("✝", 540, 554);
           ctx.fillRect(590, 545, 170, 3);
 
-          // 8. Main Scripture Typography
+          // 8. Main Scripture
           ctx.fillStyle = "#ffffff";
           ctx.font = "bold 46px -apple-system, sans-serif";
           ctx.shadowColor = "rgba(0, 0, 0, 0.95)";
@@ -479,7 +538,7 @@
           ctx.fillText(item.reference, 540, startY + 30);
           ctx.shadowBlur = 0;
 
-          // 9. REAL AUDIO-MODULATED VISUALIZER
+          // 9. AUDIO-MODULATED VISUALIZER
           ctx.fillStyle = style.borderOuter;
           ctx.fillRect(200, 1240, 680, 2);
 
@@ -494,11 +553,9 @@
           for (let i = 0; i < barCount; i++) {
             let barH = 8;
             if (hasCustomAudio && audioDataArray) {
-              // Real modulation mapped to uploaded audio frequencies
               const freqVal = audioDataArray[i % audioDataArray.length] || 0;
               barH = 6 + (freqVal / 255) * 60;
             } else {
-              // Ambient pulse simulation
               barH = 10 + Math.abs(Math.sin((time / 300) + (i * 0.4))) * 28;
             }
             ctx.fillStyle = style.subColor;
@@ -516,7 +573,7 @@
           ctx.fillStyle = style.borderOuter;
           ctx.fillRect(200, 1440, 680, 2);
 
-          // 10. QR Code and Branding
+          // 10. QR Code & Branding
           const qrX = 770, qrY = 1530, qrSize = 210;
           if (qrImg.complete && qrImg.naturalWidth > 0) {
             ctx.save();
@@ -550,7 +607,7 @@
       requestAnimationFrame(drawFrame);
     }
 
-    // AUDIO + VIDEO MUXING RECORDER ENGINE
+    // 10s TIMEPHRASE RECORDING ENGINE
     let isRecording = false;
 
     function recordVideo() {
@@ -558,14 +615,18 @@
       const canvas = document.getElementById("shortsCanvas");
       const recordBtn = document.getElementById("recordBtn");
 
-      // 1. Capture Video Track from Canvas at 30fps
+      // 1. Start audio at the exact trimmed timephrase
+      if (hasCustomAudio && audioElement) {
+        if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+        audioElement.currentTime = audioTrimStart;
+        audioElement.play();
+      }
+
+      // 2. Capture combined stream
       const canvasStream = canvas.captureStream(30);
       let combinedStream = new MediaStream();
-
-      // Add video track
       canvasStream.getVideoTracks().forEach(track => combinedStream.addTrack(track));
 
-      // 2. Add Audio Track if user attached sound
       if (hasCustomAudio && audioSourceNode) {
         const dest = audioCtx.createMediaStreamDestination();
         audioSourceNode.connect(dest);
@@ -585,6 +646,9 @@
       };
 
       recorder.onstop = () => {
+        if (hasCustomAudio && audioElement) {
+          audioElement.pause();
+        }
         const blob = new Blob(chunks, { type: 'video/webm' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
