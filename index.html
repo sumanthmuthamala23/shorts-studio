@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Motivating Christian - Thematic Scripture Shorts Studio</title>
+  <title>Motivating Christian - Animated Shorts Studio</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: #090d16; color: #f8fafc; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 16px; }
@@ -19,17 +19,30 @@
     label { font-size: 11px; color: #f59e0b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
     select, input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0a0f1d; color: #fff; font-size: 13px; outline: none; }
     
-    .search-row { display: flex; gap: 8px; }
-    .theme-badge-list { display: flex; flex-wrap: wrap; gap: 6px; max-height: 120px; overflow-y: auto; padding: 6px 0; }
-    .badge { font-size: 11px; padding: 5px 10px; border-radius: 6px; background: #0a0f1d; border: 1px solid #334155; color: #94a3b8; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+    .theme-badge-list { display: flex; flex-wrap: wrap; gap: 6px; max-height: 95px; overflow-y: auto; padding: 4px 0; }
+    .badge { font-size: 11px; padding: 5px 9px; border-radius: 6px; background: #0a0f1d; border: 1px solid #334155; color: #94a3b8; cursor: pointer; transition: 0.2s; white-space: nowrap; }
     .badge:hover, .badge.active { background: #f59e0b; color: #000; font-weight: 700; border-color: #f59e0b; }
 
-    .btn-row { display: flex; gap: 10px; margin-top: 4px; }
-    button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; }
+    /* Visual Aesthetic Style Bar */
+    .style-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+    .style-btn { padding: 8px 4px; font-size: 11px; border: 1px solid #334155; border-radius: 6px; background: #0a0f1d; color: #cbd5e1; cursor: pointer; font-weight: 600; text-align: center; }
+    .style-btn.active { border-color: #f59e0b; background: #1e293b; color: #f59e0b; }
+
+    .btn-row { display: flex; gap: 8px; margin-top: 4px; }
+    button.action-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
     .btn-primary { background: #d97706; color: #fff; }
     .btn-primary:hover { background: #b45309; }
     .btn-download { background: #10b981; color: #fff; }
     .btn-download:hover { background: #059669; }
+    .btn-video { background: #8b5cf6; color: #fff; }
+    .btn-video:hover { background: #7c3aed; }
+    .btn-video.recording { background: #ef4444; animation: pulseRecord 1s infinite; }
+
+    @keyframes pulseRecord {
+      0% { opacity: 1; }
+      50% { opacity: 0.6; }
+      100% { opacity: 1; }
+    }
 
     .info-card { background: #0a0f1d; border: 1px solid #1e293b; border-radius: 8px; padding: 12px; font-size: 12px; line-height: 1.6; }
     .info-title { color: #f59e0b; font-weight: bold; margin-bottom: 4px; }
@@ -42,28 +55,38 @@
 <body>
 
   <header>
-    <h1>MOTIVATING CHRISTIAN • THEMATIC SHORTS STUDIO</h1>
-    <p class="sub">Select Any Biblical Theme & Pair with Classic Telugu Worship Songs</p>
+    <h1>MOTIVATING CHRISTIAN • ANIMATED SHORTS STUDIO</h1>
+    <p class="sub">Direct MP4/WebM Video Recording & Multi-Theme Visual Aesthetics</p>
   </header>
 
   <div class="container">
     <div class="controls">
       
-      <!-- Theme Quick-Filter Buttons -->
+      <!-- Visual Palette Theme Selector -->
       <div>
-        <label>1. Select Scripture Theme / Situation</label>
+        <label>Visual Color Theme</label>
+        <div class="style-row">
+          <button id="theme_gold" class="style-btn active" onclick="setVisualTheme('gold')">👑 Royal Gold</button>
+          <button id="theme_dawn" class="style-btn" onclick="setVisualTheme('dawn')">🌅 Dawn of Hope</button>
+          <button id="theme_emerald" class="style-btn" onclick="setVisualTheme('emerald')">🌿 Midnight Olive</button>
+        </div>
+      </div>
+
+      <!-- Theme Badges -->
+      <div>
+        <label>Scripture Situation / Category</label>
         <div class="theme-badge-list" id="badgeContainer"></div>
       </div>
 
-      <!-- Quick Search Bar -->
+      <!-- Search Bar -->
       <div>
-        <label>Search Verse or Song (Telugu / English)</label>
+        <label>Search Verse or Song</label>
         <input type="text" id="searchInput" placeholder="e.g. కాపరి, భయం, healing, praise..." oninput="handleSearch()">
       </div>
 
-      <!-- Result Dropdown -->
+      <!-- Pick Verse -->
       <div>
-        <label>2. Pick Specific Scripture & Song</label>
+        <label>Scripture Selection</label>
         <select id="entrySelect" onchange="loadSelectedEntry()"></select>
       </div>
 
@@ -78,20 +101,64 @@
         <div id="ytMeta" style="font-size: 11px; color: #cbd5e1; word-break: break-word;">—</div>
       </div>
 
+      <!-- Action Buttons -->
       <div class="btn-row">
-        <button class="btn-primary" onclick="randomizeInTheme()">🔀 Pick Another in Theme</button>
-        <button class="btn-download" onclick="downloadShortFrame()">⬇️ Download 9:16 PNG</button>
+        <button class="action-btn btn-primary" onclick="randomizeInTheme()">🔀 Shuffle</button>
+        <button class="action-btn btn-download" onclick="downloadShortFrame()">🖼️ PNG</button>
+        <button id="recordBtn" class="action-btn btn-video" onclick="recordAnimatedVideo()">🎬 Record 10s Video</button>
       </div>
     </div>
 
-    <!-- 9:16 Live Canvas Preview -->
+    <!-- Live Animated 9:16 Canvas -->
     <div class="preview-box">
       <canvas id="shortsCanvas" width="1080" height="1920"></canvas>
     </div>
   </div>
 
   <script>
-    // FULL THEMATIC SCRIPTURE & TELUGU WORSHIP ARCHIVE
+    // VISUAL COLOR THEMES
+    const visualStyles = {
+      gold: {
+        bgTop: "#050914",
+        bgMid: "#0f172a",
+        bgBottom: "#000000",
+        glowColor: "rgba(245, 158, 11, ",
+        accentColor: "#f59e0b",
+        subColor: "#38bdf8",
+        borderOuter: "rgba(245, 158, 11, 0.35)",
+        borderInner: "rgba(245, 158, 11, 0.85)"
+      },
+      dawn: {
+        bgTop: "#2a0845",
+        bgMid: "#641838",
+        bgBottom: "#13041c",
+        glowColor: "rgba(251, 146, 60, ",
+        accentColor: "#fb923c",
+        subColor: "#f472b6",
+        borderOuter: "rgba(251, 146, 60, 0.35)",
+        borderInner: "rgba(251, 146, 60, 0.85)"
+      },
+      emerald: {
+        bgTop: "#022c22",
+        bgMid: "#064e3b",
+        bgBottom: "#011710",
+        glowColor: "rgba(52, 211, 153, ",
+        accentColor: "#34d399",
+        subColor: "#a7f3d0",
+        borderOuter: "rgba(52, 211, 153, 0.35)",
+        borderInner: "rgba(52, 211, 153, 0.85)"
+      }
+    };
+
+    let activeStyleKey = "gold";
+
+    function setVisualTheme(key) {
+      activeStyleKey = key;
+      document.querySelectorAll(".style-btn").forEach(btn => btn.classList.remove("active"));
+      document.getElementById("theme_" + key).classList.add("active");
+    }
+
+    // THEMATIC SCRIPTURES
     const bibleThemes = [
       { id: "ALL", name: "అన్ని వాక్యాలు (All Themes)" },
       { id: "FEAR", name: "భయము & ఆందోళన (Fear & Anxiety)" },
@@ -99,216 +166,36 @@
       { id: "HEALING", name: "స్వస్థత & విడుదల (Healing)" },
       { id: "PROVISION", name: "ఆర్థిక దీవెన (Provision & Blessing)" },
       { id: "FAMILY", name: "కుటుంబం & సమాధానం (Family Peace)" },
-      { id: "VICTORY", name: "శోధనలు & విజయం (Victory & Strength)" },
+      { id: "VICTORY", name: "శోధనలు & విజయం (Victory)" },
       { id: "MORNING", name: "ఉదయకాల వాగ్దానాలు (Morning Guidance)" },
-      { id: "PRAISE", name: "స్తుతి & కృతజ్ఞత (Praise & Worship)" },
-      { id: "WISDOM", name: "జ్ఞానము & వివేకం (Wisdom & Guidance)" }
+      { id: "PRAISE", name: "స్తుతి & కృతజ్ఞత (Praise & Worship)" }
     ];
 
     const scriptureDatabase = [
-      // FEAR & ANXIETY
-      {
-        theme: "FEAR",
-        verseTitle: "భయపడకుము",
-        verseLines: ["భయపడకుము నేను నీకు తోడైయున్నాను,", "దిగులుపడకుము నేను నీ దేవుడనై యున్నాను;", "నేను నిన్ను బలపరతును."],
-        reference: "— యెషయా 41:10",
-        songName: "నీ కృపయే నా ఆశ్రయం (Nee Krupaye Naa Aasrayam)",
-        songThemes: "భయం పోగొట్టే దేవుని అద్భుతమైన శాంతి మరియు కృప."
-      },
-      {
-        theme: "FEAR",
-        verseTitle: "శాంతినిచ్చు దేవుడు",
-        verseLines: ["శాంతి మీకు అనుగ్రహించి వెళ్లుచున్నాను,", "నా శాంతినే మీకిచ్చుచున్నాను;", "మీ హృదయమును కలవరపడనియ్యకుడి."],
-        reference: "— యోహాను 14:27",
-        songName: "నా హృదయములో నీ శాంతి (Samadhaana Kartha)",
-        songThemes: "లోకమివ్వలేని దేవుని పరలోక సమాధానం."
-      },
-      {
-        theme: "FEAR",
-        verseTitle: "భారము మోయువాడు",
-        verseLines: ["నీ భారము యెహోవామీద మోపుము,", "ఆయన నిన్ను ఆదుకొనును;", "నీతిమంతుని ఎన్నడును కదలనీయడు."],
-        reference: "— కీర్తనలు 55:22",
-        songName: "భారము మోసే నా ప్రియ యేసు",
-        songThemes: "మన సమస్త ఆందోళనలను క్రీస్తుపై మోపుట."
-      },
-
-      // FAITH & HOPE
-      {
-        theme: "FAITH",
-        verseTitle: "ఆయన మన బలము",
-        verseLines: ["నన్ను బలపరచువానియందే", "నేను సమస్తమును", "చేయగలనెను."],
-        reference: "— ఫిలిప్పీయులకు 4:13",
-        songName: "యేసే నా బలము యేసే నా జీవము",
-        songThemes: "బలహీనతలను జయించే క్రీస్తు శక్తి."
-      },
-      {
-        theme: "FAITH",
-        verseTitle: "కొత్త బలము",
-        verseLines: ["యెహోవాకొరకు ఎదురుచూచువారు", "నూతన బలము పొందుదురు;", "వారు పక్షిరాజులవలె రెక్కలు చాచి పైకెగయుదురు."],
-        reference: "— యెషయా 40:31",
-        songName: "పక్షిరాజు వలె నూతన బలముతో",
-        songThemes: "విశ్వాసములో ఎన్నడూ అలసిపోని నిరీక్షణ."
-      },
-      {
-        theme: "FAITH",
-        verseTitle: "అసాధ్యమైనది ఏదీ లేదు",
-        verseLines: ["మనుష్యులకు అసాధ్యమైనవి", "దేవునికి సమస్తమును", "సాధ్యమే."],
-        reference: "— లూకా 18:27",
-        songName: "అసాధ్యమైనది ఏదీ లేదు నా యేసయ్యకు",
-        songThemes: "దేవుని సర్వశక్తిమంతమైన అద్భుత కార్యాలు."
-      },
-
-      // HEALING
-      {
-        theme: "HEALING",
-        verseTitle: "ఆరోగ్యపు వాగ్దానం",
-        verseLines: ["నేను నీకు ఆరోగ్యము రప్పించెదను,", "నీ గాయములను మాన్పెదను;", "ఇది యెహోవా వాక్కు."],
-        reference: "— యిర్మియా 30:17",
-        songName: "స్వస్థపరచు యెహోవావు నీవే (Yehova Rapha)",
-        songThemes: "శరీరమునకు మరియు అంతరంగానికి దైవిక స్వస్థత."
-      },
-      {
-        theme: "HEALING",
-        verseTitle: "గాయములను కట్టువాడు",
-        verseLines: ["గుండె చెదరినవారిని ఆయన బాగుచేయును,", "వారి గాయములను", "కట్టును."],
-        reference: "— కీర్తనలు 147:3",
-        songName: "గాయపడిన మనసా కలత చెందకు",
-        songThemes: "హృదయ వేదనలను ఓదార్చే దైవ ప్రేమ."
-      },
-      {
-        theme: "HEALING",
-        verseTitle: "ఆయన గాయములచేత స్వస్థత",
-        verseLines: ["ఆయన పొందిన దెబ్బలచేత", "మనకు స్వస్థత", "కలుగుచున్నది."],
-        reference: "— యెషయా 53:5",
-        songName: "కలువరి గిరిపై సిలువలో (Kaluvari Giripai)",
-        songThemes: "సిలువ త్యాగం ద్వారా లభించిన దివ్య ఆరోగ్యం."
-      },
-
-      // PROVISION & BLESSING
-      {
-        theme: "PROVISION",
-        verseTitle: "లేమి కలుగదు",
-        verseLines: ["యెహోవా నా కాపరి,", "నాకు లేమి కలుగదు;", "పచ్చికగల చోట్ల నన్ను పరుండజేయును."],
-        reference: "— కీర్తనలు 23:1-2",
-        songName: "యెహోవా నా కాపరి (Yehova Naa Kaapari)",
-        songThemes: "జీవితంలో ఏ కొరతా రానివ్వని కాపరి నడిపింపు."
-      },
-      {
-        theme: "PROVISION",
-        verseTitle: "మేలైన తలంపులు",
-        verseLines: ["మీరు నిరీక్షణ కలిగియుండునట్లు", "నేను మీ విషయమై తలంచుచున్న", "సమాధానకరమైన తలంపులే."],
-        reference: "— యిర్మియా 29:11",
-        songName: "యేసయ్యా నీ ప్రేమ నాపై ఎంతో (Yesayya Nee Prema)",
-        songThemes: "మన భవిష్యత్తు మరియు ఆర్థిక స్థితిపై దేవుని సంకల్పం."
-      },
-      {
-        theme: "PROVISION",
-        verseTitle: "అడుగుడి మీకియ్యబడును",
-        verseLines: ["అడుగుడి మీకియ్యబడును,", "వెదకుడి మీకు దొరకును,", "తట్టుడి మీకు తీయబడును."],
-        reference: "— మత్తయి 7:7",
-        songName: "ప్రార్థన శక్తిగలది (Praarthana Shakthigaladi)",
-        songThemes: "అడిగిన ప్రతి ఒక్కరికీ సమృద్ధినిచ్చే దేవుడు."
-      },
-
-      // FAMILY & PEACE
-      {
-        theme: "FAMILY",
-        verseTitle: "గృహమునకు దీవెన",
-        verseLines: ["నేనును నా యింటివారును", "యెహోవాను", "సేవించెదము."],
-        reference: "— యెహోషువ 24:15",
-        songName: "నేను నా యింటివారు ప్రభునే సేవించెదము",
-        songThemes: "సకుటుంబంగా దేవుని సన్నిధిలో నిలిచే దీవెన."
-      },
-      {
-        theme: "FAMILY",
-        verseTitle: "సమాధానపు కాపుదల",
-        verseLines: ["నీ గుడారమునకు ఏ తెగులును", "సమీపింపదు;", "ఆయన నీ మార్గములన్నిటిలో కాపాడును."],
-        reference: "— కీర్తనలు 91:10-11",
-        songName: "మహోన్నతుని చాటున వసించువాడవు",
-        songThemes: "కుటుంబ గృహము చుట్టూ దైవ దూతల కంచె."
-      },
-
-      // VICTORY & STRENGTH
-      {
-        theme: "VICTORY",
-        verseTitle: "జయమునిచ్చు దేవుడు",
-        verseLines: ["మన ప్రభువైన యేసుక్రీస్తు ద్వారా", "మనకు జయము ననుగ్రహించుచున్న", "దేవునికి స్తోత్రము."],
-        reference: "— 1 కొరింథీయులకు 15:57",
-        songName: "జయమే జయము యేసు నామములో",
-        songThemes: "అపవాది శక్తులను ఓడించే సిలువ విజయం."
-      },
-      {
-        theme: "VICTORY",
-        verseTitle: "నీకు విరోధమైన ఏ ఆయుధమును",
-        verseLines: ["నీకు విరోధముగా రూపింపబడిన", "ఏ ఆయుధమును", "వర్ధిల్లదు."],
-        reference: "— యెషయా 54:17",
-        songName: "యుద్ధము యెహోవాదే (Yuddhamu Yehovade)",
-        songThemes: "మన పక్షాన యుద్ధము చేసి గెలిపించే సైన్యముల ప్రభువు."
-      },
-
-      // MORNING DEVOTION
-      {
-        theme: "MORNING",
-        verseTitle: "ఉదయకాలపు కృప",
-        verseLines: ["ఉదయమున నీ కృపను", "నాకు వినిపింపజేయుము,", "నేను నీయందు నమ్మికయుంచియున్నాను."],
-        reference: "— కీర్తనలు 143:8",
-        songName: "ఉదయ కాలమున నీ ముఖము చూచి",
-        songThemes: "ప్రతి రోజూ ఉదయమే దేవుని ముఖదర్శనం చేసుకొనుట."
-      },
-      {
-        theme: "MORNING",
-        verseTitle: "వాక్యపు వెలుగు",
-        verseLines: ["నీ వాక్యము నా పాదములకు దీపమును", "నా త్రోవకు వెలుగునై", "యున్నది."],
-        reference: "— కీర్తనలు 119:105",
-        songName: "వాక్యమే ప్రాణము వాక్యమే వెలుగు",
-        songThemes: "దైనందిన జీవితాన్ని సరిదిద్దే దైవ వాక్యం."
-      },
-
-      // PRAISE & WORSHIP
-      {
-        theme: "PRAISE",
-        verseTitle: "పరిశుద్ధ నామమునకు స్తుతి",
-        verseLines: ["నా ప్రాణమా, యెహోవాను స్తుతించుము;", "నా అంతరంగముననున్న సమస్తమా,", "ఆయన పరిశుద్ధ నామమును స్తుతించుము."],
-        reference: "— కీర్తనలు 103:1",
-        songName: "స్తోత్రము స్తుతి స్తోత్రము (Sthothramu Sthuthi)",
-        songThemes: "సకల మేళ్లకు కృతజ్ఞత చెల్లించే ఆరాధన."
-      },
-      {
-        theme: "PRAISE",
-        verseTitle: "ఆనంద గానము",
-        verseLines: ["యెహోవాయందు ఆనందించుడి,", "ఆయనయందు ఆనందించుటవలన", "మీకు బలము కలుగును."],
-        reference: "— నెహెమ్యా 8:10",
-        songName: "ఆనందమే నాలో ఆనందమే పరమానందమే",
-        songThemes: "హృదయమును బలపరిచే పరిశుద్ధాత్మ ఆనందం."
-      },
-
-      // WISDOM & GUIDANCE
-      {
-        theme: "WISDOM",
-        verseTitle: "జ్ఞానమును వెదకుడి",
-        verseLines: ["యెహోవాయందు భయభక్తులు కలిగియుండుటయే", "జ్ఞానమునకు", "మూలము."],
-        reference: "— సామెతలు 9:10",
-        songName: "నీ చిత్తమే నా భాగ్యము నా యేసయ్యా",
-        songThemes: "దేవుని భయభక్తులలో జీవించే వివేకం."
-      }
+      { theme: "FEAR", verseTitle: "భయపడకుము", verseLines: ["భయపడకుము నేను నీకు తోడైయున్నాను,", "దిగులుపడకుము నేను నీ దేవుడనై యున్నాను;", "నేను నిన్ను బలపరతును."], reference: "— యెషయా 41:10", songName: "నీ కృపయే నా ఆశ్రయం (Nee Krupaye Naa Aasrayam)", songThemes: "భయం పోగొట్టే దేవుని అద్భుతమైన శాంతి మరియు కృప." },
+      { theme: "FEAR", verseTitle: "శాంతినిచ్చు దేవుడు", verseLines: ["శాంతి మీకు అనుగ్రహించి వెళ్లుచున్నాను,", "నా శాంతినే మీకిచ్చుచున్నాను;", "మీ హృదయమును కలవరపడనియ్యకుడి."], reference: "— యోహాను 14:27", songName: "నా హృదయములో నీ శాంతి (Samadhaana Kartha)", songThemes: "లోకమివ్వలేని దేవుని పరలోక సమాధానం." },
+      { theme: "FAITH", verseTitle: "ఆయన మన బలము", verseLines: ["నన్ను బలపరచువానియందే", "నేను సమస్తమును", "చేయగలనెను."], reference: "— ఫిలిప్పీయులకు 4:13", songName: "యేసే నా బలము యేసే నా జీవము", songThemes: "బలహీనతలను జయించే క్రీస్తు శక్తి." },
+      { theme: "FAITH", verseTitle: "కొత్త బలము", verseLines: ["యెహోవాకొరకు ఎదురుచూచువారు", "నూతన బలము పొందుదురు;", "వారు పక్షిరాజులవలె రెక్కలు చాచి పైకెగయుదురు."], reference: "— యెషయా 40:31", songName: "పక్షిరాజు వలె నూతన బలముతో", songThemes: "విశ్వాసములో ఎన్నడూ అలసిపోని నిరీక్షణ." },
+      { theme: "HEALING", verseTitle: "ఆరోగ్యపు వాగ్దానం", verseLines: ["నేను నీకు ఆరోగ్యము రప్పించెదను,", "నీ గాయములను మాన్పెదను;", "ఇది యెహోవా వాక్కు."], reference: "— యిర్మియా 30:17", songName: "స్వస్థపరచు యెహోవావు నీవే (Yehova Rapha)", songThemes: "శరీరమునకు మరియు అంతరంగానికి దైవిక స్వస్థత." },
+      { theme: "HEALING", verseTitle: "గాయములను కట్టువాడు", verseLines: ["గుండె చెదరినవారిని ఆయన బాగుచేయును,", "వారి గాయములను", "కట్టును."], reference: "— కీర్తనలు 147:3", songName: "గాయపడిన మనసా కలత చెందకు", songThemes: "హృదయ వేదనలను ఓదార్చే దైవ ప్రేమ." },
+      { theme: "PROVISION", verseTitle: "లేమి కలుగదు", verseLines: ["యెహోవా నా కాపరి,", "నాకు లేమి కలుగదు;", "పచ్చికగల చోట్ల నన్ను పరుండజేయును."], reference: "— కీర్తనలు 23:1-2", songName: "యెహోవా నా కాపరి (Yehova Naa Kaapari)", songThemes: "జీవితంలో ఏ కొరతా రానివ్వని కాపరి నడిపింపు." },
+      { theme: "PROVISION", verseTitle: "మేలైన తలంపులు", verseLines: ["మీరు నిరీక్షణ కలిగియుండునట్లు", "నేను మీ విషయమై తలంచుచున్న", "సమాధానకరమైన తలంపులే."], reference: "— యిర్మియా 29:11", songName: "యేసయ్యా నీ ప్రేమ నాపై ఎంతో (Yesayya Nee Prema)", songThemes: "మన భవిష్యత్తు మరియు జీవితంపై దేవుని సంకల్పం." },
+      { theme: "FAMILY", verseTitle: "గృహమునకు దీవెన", verseLines: ["నేనును నా యింటివారును", "యెహోవాను", "సేవించెదము."], reference: "— యెహోషువ 24:15", songName: "నేను నా యింటివారు ప్రభునే సేవించెదము", songThemes: "సకుటుంబంగా దేవుని సన్నిధిలో నిలిచే దీవెన." },
+      { theme: "VICTORY", verseTitle: "జయమునిచ్చు దేవుడు", verseLines: ["మన ప్రభువైన యేసుక్రీస్తు ద్వారా", "మనకు జయము ననుగ్రహించుచున్న", "దేవునికి స్తోత్రము."], reference: "— 1 కొరింథీయులకు 15:57", songName: "జయమే జయము యేసు నామములో", songThemes: "అపవాది శక్తులను ఓడించే సిలువ విజయం." },
+      { theme: "MORNING", verseTitle: "ఉదయకాలపు కృప", verseLines: ["ఉదయమున నీ కృపను", "నాకు వినిపింపజేయుము,", "నేను నీయందు నమ్మికయుంచియున్నాను."], reference: "— కీర్తనలు 143:8", songName: "ఉదయ కాలమున నీ ముఖము చూచి", songThemes: "ప్రతి రోజూ ఉదయమే దేవుని ముఖదర్శనం చేసుకొనుట." },
+      { theme: "PRAISE", verseTitle: "పరిశుద్ధ నామమునకు స్తుతి", verseLines: ["నా ప్రాణమా, యెహోవాను స్తుతించుము;", "నా అంతరంగముననున్న సమస్తమా,", "ఆయన పరిశుద్ధ నామమును స్తుతించుము."], reference: "— కీర్తనలు 103:1", songName: "స్తోత్రము స్తుతి స్తోత్రము (Sthothramu Sthuthi)", songThemes: "సకల మేళ్లకు కృతజ్ఞత చెల్లించే ఆరాధన." }
     ];
 
     let currentTheme = "ALL";
     let filteredList = [...scriptureDatabase];
     let currentIndex = 0;
+    let animFrameId = null;
 
     const logoImg = new Image();
     logoImg.src = "logo.png";
     const qrImg = new Image();
     qrImg.src = "qr.png";
 
-    function onImageReady() {
-      renderCanvas(filteredList[currentIndex]);
-    }
-    logoImg.onload = onImageReady;
-    qrImg.onload = onImageReady;
-
-    // Render theme badges
     function initThemeBadges() {
       const badgeBox = document.getElementById("badgeContainer");
       badgeBox.innerHTML = "";
@@ -333,7 +220,6 @@
       }
       currentIndex = 0;
       updateDropdown();
-      renderCanvas(filteredList[currentIndex]);
     }
 
     function handleSearch() {
@@ -352,9 +238,6 @@
 
       currentIndex = 0;
       updateDropdown();
-      if (filteredList.length > 0) {
-        renderCanvas(filteredList[0]);
-      }
     }
 
     function updateDropdown() {
@@ -362,7 +245,7 @@
       select.innerHTML = "";
       if (filteredList.length === 0) {
         const opt = document.createElement("option");
-        opt.innerText = "No verses match this search";
+        opt.innerText = "No matching scriptures";
         select.appendChild(opt);
         return;
       }
@@ -374,11 +257,12 @@
         select.appendChild(opt);
       });
       select.value = currentIndex;
+      updateCards();
     }
 
     function loadSelectedEntry() {
       currentIndex = parseInt(document.getElementById("entrySelect").value);
-      renderCanvas(filteredList[currentIndex]);
+      updateCards();
     }
 
     function randomizeInTheme() {
@@ -390,146 +274,231 @@
 
       currentIndex = nextIdx;
       document.getElementById("entrySelect").value = currentIndex;
-      renderCanvas(filteredList[currentIndex]);
+      updateCards();
     }
 
-    // High-Resolution 9:16 Canvas Renderer
-    function renderCanvas(item) {
+    function updateCards() {
+      const item = filteredList[currentIndex];
       if (!item) return;
-      const canvas = document.getElementById("shortsCanvas");
-      const ctx = canvas.getContext("2d");
-
-      // 1. Dark Aesthetic Background
-      const bgGrad = ctx.createLinearGradient(0, 0, 0, 1920);
-      bgGrad.addColorStop(0, "#050914");
-      bgGrad.addColorStop(0.4, "#0f172a");
-      bgGrad.addColorStop(0.8, "#050914");
-      bgGrad.addColorStop(1, "#000000");
-      ctx.fillStyle = bgGrad;
-      ctx.fillRect(0, 0, 1080, 1920);
-
-      // 2. Divine Sunburst Glow Behind Logo
-      const sunGlow = ctx.createRadialGradient(540, 290, 40, 540, 290, 500);
-      sunGlow.addColorStop(0, "rgba(245, 158, 11, 0.35)");
-      sunGlow.addColorStop(0.5, "rgba(245, 158, 11, 0.08)");
-      sunGlow.addColorStop(1, "rgba(0, 0, 0, 0)");
-      ctx.fillStyle = sunGlow;
-      ctx.fillRect(0, 0, 1080, 1920);
-
-      // 3. Double Gold Border Frame
-      ctx.strokeStyle = "rgba(245, 158, 11, 0.35)";
-      ctx.lineWidth = 3;
-      ctx.strokeRect(36, 36, 1008, 1848);
-
-      ctx.strokeStyle = "rgba(245, 158, 11, 0.85)";
-      ctx.lineWidth = 1.5;
-      ctx.strokeRect(48, 48, 984, 1824);
-
-      const drawCorner = (x, y) => {
-        ctx.fillStyle = "#f59e0b";
-        ctx.fillRect(x - 6, y - 6, 12, 12);
-      };
-      drawCorner(48, 48);
-      drawCorner(1032, 48);
-      drawCorner(48, 1872);
-      drawCorner(1032, 1872);
-
-      // 4. Circular Logo Badge
-      if (logoImg.complete && logoImg.naturalWidth > 0) {
-        ctx.save();
-        ctx.shadowColor = "rgba(245, 158, 11, 0.6)";
-        ctx.shadowBlur = 30;
-        ctx.beginPath();
-        ctx.arc(540, 290, 140, 0, Math.PI * 2);
-        ctx.closePath();
-        ctx.clip();
-        ctx.drawImage(logoImg, 400, 150, 280, 280);
-        ctx.restore();
-
-        ctx.strokeStyle = "#f59e0b";
-        ctx.lineWidth = 5;
-        ctx.beginPath();
-        ctx.arc(540, 290, 140, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-
-      // 5. Header Title Bar
-      ctx.fillStyle = "#f59e0b";
-      ctx.font = "bold 46px -apple-system, sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText(item.verseTitle, 540, 520);
-
-      // Gold Divider line with Cross
-      ctx.fillStyle = "rgba(245, 158, 11, 0.6)";
-      ctx.fillRect(320, 545, 170, 3);
-      ctx.fillText("✝", 540, 554);
-      ctx.fillRect(590, 545, 170, 3);
-
-      // 6. Main Scripture Text
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "bold 46px -apple-system, sans-serif";
-      ctx.shadowColor = "rgba(0, 0, 0, 0.95)";
-      ctx.shadowBlur = 18;
-
-      let startY = 780;
-      item.verseLines.forEach(line => {
-        ctx.fillText(line, 540, startY);
-        startY += 90;
-      });
-
-      // Scripture Reference
-      ctx.fillStyle = "#facc15";
-      ctx.font = "italic bold 40px -apple-system, sans-serif";
-      ctx.fillText(item.reference, 540, startY + 30);
-      ctx.shadowBlur = 0;
-
-      // 7. Connected Worship Song Banner
-      ctx.fillStyle = "rgba(245, 158, 11, 0.4)";
-      ctx.fillRect(200, 1260, 680, 2);
-
-      ctx.fillStyle = "#94a3b8";
-      ctx.font = "bold 28px -apple-system, sans-serif";
-      ctx.fillText("🎵 ధ్యాన గీతం (Connected Worship Song)", 540, 1315);
-
-      ctx.fillStyle = "#38bdf8";
-      ctx.font = "bold 40px -apple-system, sans-serif";
-      ctx.fillText(item.songName, 540, 1375);
-
-      ctx.fillStyle = "rgba(245, 158, 11, 0.4)";
-      ctx.fillRect(200, 1420, 680, 2);
-
-      // 8. Bottom Section: QR Code & Call to Action
-      const qrX = 770, qrY = 1530, qrSize = 210;
-      if (qrImg.complete && qrImg.naturalWidth > 0) {
-        ctx.save();
-        ctx.shadowColor = "rgba(245, 158, 11, 0.5)";
-        ctx.shadowBlur = 20;
-        ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
-        ctx.restore();
-
-        ctx.strokeStyle = "#f59e0b";
-        ctx.lineWidth = 3;
-        ctx.strokeRect(qrX, qrY, qrSize, qrSize);
-      }
-
-      ctx.textAlign = "left";
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "bold 38px -apple-system, sans-serif";
-      ctx.fillText("ఆమెన్ అని కామెంట్ చేయండి", 90, 1610);
-
-      ctx.fillStyle = "#f59e0b";
-      ctx.font = "bold 32px -apple-system, sans-serif";
-      ctx.fillText("@Motivatingchristian", 90, 1670);
-
-      ctx.fillStyle = "#94a3b8";
-      ctx.font = "24px -apple-system, sans-serif";
-      ctx.fillText("👉 Scan QR to Subscribe on YouTube", 90, 1725);
-
-      // Update Dashboard Info Cards
       document.getElementById("songTitle").innerText = item.songName;
       document.getElementById("songDesc").innerText = item.songThemes;
       document.getElementById("ytMeta").innerText = 
         `${item.verseTitle} 🙏 | ${item.reference} | Song: ${item.songName} #Shorts #TeluguChristian #MotivatingChristian`;
+    }
+
+    // LIVE ANIMATION ENGINE (Running continuously at 30fps)
+    function startAnimationLoop() {
+      const canvas = document.getElementById("shortsCanvas");
+      const ctx = canvas.getContext("2d");
+
+      function drawFrame(time) {
+        const item = filteredList[currentIndex];
+        const style = visualStyles[activeStyleKey];
+
+        if (item) {
+          const pulse = Math.sin(time / 650); // Periodic gentle breathing cycle
+          const glowAlpha = 0.28 + pulse * 0.12;
+
+          // 1. Theme Gradient Background
+          const bgGrad = ctx.createLinearGradient(0, 0, 0, 1920);
+          bgGrad.addColorStop(0, style.bgTop);
+          bgGrad.addColorStop(0.4, style.bgMid);
+          bgGrad.addColorStop(0.8, style.bgTop);
+          bgGrad.addColorStop(1, style.bgBottom);
+          ctx.fillStyle = bgGrad;
+          ctx.fillRect(0, 0, 1080, 1920);
+
+          // 2. Animated Sunburst Flare Behind Logo
+          const sunRadius = 520 + pulse * 45;
+          const sunGlow = ctx.createRadialGradient(540, 290, 40, 540, 290, sunRadius);
+          sunGlow.addColorStop(0, style.glowColor + glowAlpha + ")");
+          sunGlow.addColorStop(0.5, style.glowColor + (glowAlpha * 0.3) + ")");
+          sunGlow.addColorStop(1, "rgba(0, 0, 0, 0)");
+          ctx.fillStyle = sunGlow;
+          ctx.fillRect(0, 0, 1080, 1920);
+
+          // 3. Double Animated Geometric Borders
+          ctx.strokeStyle = style.borderOuter;
+          ctx.lineWidth = 3;
+          ctx.strokeRect(36, 36, 1008, 1848);
+
+          ctx.strokeStyle = style.borderInner;
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(48, 48, 984, 1824);
+
+          // Corner Gold Markers
+          const drawCorner = (x, y) => {
+            ctx.fillStyle = style.accentColor;
+            ctx.fillRect(x - 6, y - 6, 12, 12);
+          };
+          drawCorner(48, 48);
+          drawCorner(1032, 48);
+          drawCorner(48, 1872);
+          drawCorner(1032, 1872);
+
+          // 4. Circular Logo Badge with Breathing Glow
+          if (logoImg.complete && logoImg.naturalWidth > 0) {
+            ctx.save();
+            ctx.shadowColor = style.glowColor + "0.7)";
+            ctx.shadowBlur = 25 + pulse * 10;
+            ctx.beginPath();
+            ctx.arc(540, 290, 140, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.clip();
+            ctx.drawImage(logoImg, 400, 150, 280, 280);
+            ctx.restore();
+
+            ctx.strokeStyle = style.accentColor;
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.arc(540, 290, 140, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+
+          // 5. Header Title Bar
+          ctx.fillStyle = style.accentColor;
+          ctx.font = "bold 46px -apple-system, sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText(item.verseTitle, 540, 520);
+
+          ctx.fillStyle = style.borderOuter;
+          ctx.fillRect(320, 545, 170, 3);
+          ctx.fillText("✝", 540, 554);
+          ctx.fillRect(590, 545, 170, 3);
+
+          // 6. Main Scripture Text
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "bold 46px -apple-system, sans-serif";
+          ctx.shadowColor = "rgba(0, 0, 0, 0.95)";
+          ctx.shadowBlur = 18;
+
+          let startY = 780;
+          item.verseLines.forEach(line => {
+            ctx.fillText(line, 540, startY);
+            startY += 90;
+          });
+
+          // Scripture Reference
+          ctx.fillStyle = "#facc15";
+          ctx.font = "italic bold 40px -apple-system, sans-serif";
+          ctx.fillText(item.reference, 540, startY + 30);
+          ctx.shadowBlur = 0;
+
+          // 7. Dynamic Audio Visualizer Waves (Worship Pulse Effect)
+          ctx.fillStyle = style.borderOuter;
+          ctx.fillRect(200, 1240, 680, 2);
+
+          // Render 16 dancing audio visualizer bars
+          const barCount = 16;
+          const barWidth = 6;
+          const startBarX = 540 - ((barCount * 14) / 2);
+          for (let i = 0; i < barCount; i++) {
+            const barH = 12 + Math.abs(Math.sin((time / 300) + (i * 0.5))) * 28;
+            ctx.fillStyle = style.subColor;
+            ctx.fillRect(startBarX + i * 14, 1285 - barH / 2, barWidth, barH);
+          }
+
+          ctx.fillStyle = "#94a3b8";
+          ctx.font = "bold 26px -apple-system, sans-serif";
+          ctx.fillText("🎵 ధ్యాన గీతం (Connected Worship Song)", 540, 1335);
+
+          ctx.fillStyle = style.subColor;
+          ctx.font = "bold 40px -apple-system, sans-serif";
+          ctx.fillText(item.songName, 540, 1395);
+
+          ctx.fillStyle = style.borderOuter;
+          ctx.fillRect(200, 1440, 680, 2);
+
+          // 8. QR Code and Branding
+          const qrX = 770, qrY = 1530, qrSize = 210;
+          if (qrImg.complete && qrImg.naturalWidth > 0) {
+            ctx.save();
+            ctx.shadowColor = style.glowColor + "0.5)";
+            ctx.shadowBlur = 20;
+            ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+            ctx.restore();
+
+            ctx.strokeStyle = style.accentColor;
+            ctx.lineWidth = 3;
+            ctx.strokeRect(qrX, qrY, qrSize, qrSize);
+          }
+
+          ctx.textAlign = "left";
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "bold 38px -apple-system, sans-serif";
+          ctx.fillText("ఆమెన్ అని కామెంట్ చేయండి", 90, 1610);
+
+          ctx.fillStyle = style.accentColor;
+          ctx.font = "bold 32px -apple-system, sans-serif";
+          ctx.fillText("@Motivatingchristian", 90, 1670);
+
+          ctx.fillStyle = "#94a3b8";
+          ctx.font = "24px -apple-system, sans-serif";
+          ctx.fillText("👉 Scan QR to Subscribe on YouTube", 90, 1725);
+        }
+
+        animFrameId = requestAnimationFrame(drawFrame);
+      }
+
+      animFrameId = requestAnimationFrame(drawFrame);
+    }
+
+    // DIRECT IN-BROWSER MP4/WEBM VIDEO RECORDER
+    let isRecording = false;
+
+    function recordAnimatedVideo() {
+      if (isRecording) return;
+      const canvas = document.getElementById("shortsCanvas");
+      const recordBtn = document.getElementById("recordBtn");
+
+      // Capture 30 FPS video stream directly from canvas
+      const stream = canvas.captureStream(30);
+      let options = { mimeType: 'video/webm;codecs=vp9' };
+      if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+        options = { mimeType: 'video/webm' };
+      }
+
+      const recorder = new MediaRecorder(stream, options);
+      const chunks = [];
+
+      recorder.ondataavailable = e => {
+        if (e.data.size > 0) chunks.push(e.data);
+      };
+
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const cleanRef = filteredList[currentIndex].reference.replace(/[^a-zA-Z0-9]/g, "_");
+        a.download = `MotivatingChristian_Short_${cleanRef}.webm`;
+        a.href = url;
+        a.click();
+        URL.revokeObjectURL(url);
+
+        isRecording = false;
+        recordBtn.classList.remove("recording");
+        recordBtn.innerText = "🎬 Record 10s Video";
+      };
+
+      // 10-Second Short Recording Countdown
+      isRecording = true;
+      recordBtn.classList.add("recording");
+      let secondsLeft = 10;
+      recordBtn.innerText = `🔴 Recording (${secondsLeft}s)...`;
+
+      const countdown = setInterval(() => {
+        secondsLeft--;
+        if (secondsLeft > 0) {
+          recordBtn.innerText = `🔴 Recording (${secondsLeft}s)...`;
+        } else {
+          clearInterval(countdown);
+        }
+      }, 1000);
+
+      recorder.start();
+      setTimeout(() => {
+        recorder.stop();
+      }, 10000); // Stop at 10 seconds
     }
 
     function downloadShortFrame() {
@@ -544,7 +513,7 @@
     window.onload = () => {
       initThemeBadges();
       updateDropdown();
-      renderCanvas(filteredList[0]);
+      startAnimationLoop();
     };
   </script>
 </body>
